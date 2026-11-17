@@ -141,3 +141,46 @@ questions/puzzles). Streak counts weekdays; weekends and holidays don't break it
 (holiday dates stored in the database). Questions come only from lessons the
 student has opened **and every lesson before them** in the recommended order:
 if they skipped ahead, they're expected to know the earlier material too.
+
+## 5. Tech stack (11/16/2026, in progress)
+
+**Database: MongoDB Atlas** (document database). Chosen over Firebase for
+long-term flexibility: rich aggregation queries for anonymous section stats,
+natural username/password login, a future path to Level 3 rosters and Canvas
+grade passback, and portability (could run on university-controlled servers).
+
+- Student Python runs in the browser with **Pyodide**, so there are no server
+  costs for running code.
+- Pilot cost: $0 on the Atlas free tier (512 MB, up to 100 ops/sec).
+  At ~10,000 active students: Atlas Flex ($8–30/month) plus app hosting is about
+  $0.005 per student per month (prices checked 11/16/2026).
+- Data model: progress and attempts live in their own documents/collections,
+  not embedded in section documents; sections hold member IDs only.
+
+**Full stack (decided 11/16/2026):**
+- **Frontend + backend: Next.js (React).** API routes serve as the backend.
+  (The user built a React + Node/Express + MongoDB Atlas app in CS 260.)
+- **Database: MongoDB Atlas** (free tier for the pilot).
+- **Student code: Pyodide** in the browser.
+- **Packaging: Docker.** The Dockerfile is the single source of truth for how
+  the app builds and runs, so the same image can move between hosts.
+- **Hosting: Google Cloud Run** (free tier; scales to zero, so a few seconds of
+  cold start after idle). Pilot uses the free `*.run.app` address. Requires a
+  Google Cloud billing account (card on file); set a budget alert.
+
+**Later / optional:**
+- **Custom domain via Firebase Hosting** in front of Cloud Run ($0 at pilot
+  scale; Hosting only, not the Firebase database). Set it up before real
+  students use PyTrek so logins aren't reset by a domain change. Buy the domain
+  from an independent registrar.
+- **Paid exits:** Railway (~$5/mo) or Render Starter ($7/mo) for no cold
+  starts; a Google load balancer (~$18–19/mo) once commercial.
+
+**Portability rules:** read the port from `PORT`; keep secrets and settings in
+environment variables; avoid Google-only services inside the app; keep Cloud Run
+and the Atlas cluster in the same region (us-central1).
+
+**Considered and rejected:** Firebase/Firestore as the database (weak grouped
+stats, email-based login); Vercel Hobby (non-commercial only, no Docker);
+Cloudflare Workers (MongoDB driver support too new); load balancer for the
+pilot (fixed ~$18/mo).
