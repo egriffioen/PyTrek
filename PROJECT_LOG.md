@@ -4,5 +4,6 @@
 |------|------|-------|
 | 11/11/2026 | Brainstormed the project idea (gamified, puzzle-based Python learning site), looked into Pyodide for running Python in the browser, sketched a puzzle map/storyline, and built a quick single-page Pyodide prototype | 1 |
 | 11/12/2026 | Named the project (PyTrek), created the GitHub repo, met with professor (~30 min) about CS 111, researched the CS 111 course materials and structure, decided to start with the web unit, and built a quick prototype of web-scraping checkpoints | 2 |
+| 11/16/2026 | Read the CS 452 Final Project requirements. Made core design decisions: web unit scope (all 7 topics), users and FERPA-safe grading (Canvas screenshots, anonymous section stats with a minimum group of 5), activity types, story (trail-marker mystery with a rogue AI agent), puzzles, boss fight, warm-ups, badges, and progress bar. Compared and priced databases and hosting; chose Next.js + MongoDB Atlas + Pyodide + Docker on Google Cloud Run, with Better Auth email + password sign-in. Drafted the data model and system design docs | 4.25 |
 
-**Total:** 3
+**Total:** 7.25
