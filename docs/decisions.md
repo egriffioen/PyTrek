@@ -51,7 +51,7 @@ Topics 1–5 are what HW05 and Project 04 use; 6–7 complete Exam 4 coverage.
 ## 3. Grades, privacy, and teacher visibility (11/16/2026)
 
 **Decision:** PyTrek is never a gradebook. Grades live only in Canvas.
-- Students sign in with Google (see decision 5), which means PyTrek stores
+- Students sign in with their **email** (see decision 5), so PyTrek stores
   their **email address**. They also choose a free-form **display username**
   (no limits on nicknames), which is what appears on completion pages. They can
   join a class section.
@@ -76,7 +76,7 @@ only after BYU approval.
 - Screenshots can be faked or shared; no verification code for now, only the
   clear username and timestamp for spot checks.
 - Usernames are unrestricted, so a student could choose an identifying name.
-- PyTrek stores students' emails (from Google sign-in), so its data is
+- PyTrek stores students' email addresses, so its data is
   identifiable and the database must be secured accordingly. Mention this when
   confirming the setup with the professor.
 - Unlimited attempts mean the score reflects completion, not first-try skill
@@ -181,12 +181,19 @@ grade passback, and portability (could run on university-controlled servers).
   Google Cloud billing account (card on file); set a budget alert.
 
 **Login (decided 11/16/2026): Better Auth**, using its official MongoDB adapter.
-- Start with **Sign in with Google only**: one-click sign-in, and Google handles
-  forgotten passwords. Requiring an email is accepted as standard practice.
+- **Email sign-in** (updated 11/16/2026). Google sign-in was dropped because
+  BYU may not allow requiring Google accounts; students can use any email,
+  including their BYU email. Requiring an email is accepted as standard
+  practice. Needs an **email-sending service** (verification and recovery).
 - Students pick a free-form display username after first sign-in.
-- **Later, as needed:** add username/password (Better Auth's username plugin;
-  it requires an email and needs an email-sending service for password
-  resets) or other providers such as Microsoft or GitHub.
+- **Later, as needed:** Google or other providers for independent learners;
+  BYU's own sign-in (NetID) through Better Auth's SSO plugin, which would need
+  BYU IT approval.
+- **Email + password** (decided 11/16/2026). Passwords are hashed by Better
+  Auth; email is used to verify the account and reset forgotten passwords.
+  Passwords: at least 8 characters, long passphrases allowed; sign-in attempts
+  rate-limited.
+- **Open (decide when building):** which email-sending service.
 - Chosen over Auth.js (in security-only maintenance since Sept 2025, with
   Better Auth recommended for new projects) and over iron-session/DIY (sessions
   only, and no Google sign-in).

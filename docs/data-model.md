@@ -11,7 +11,7 @@ ship with the app. MongoDB refers to them by ID (e.g. `activityId: "html-04"`).
 ```mermaid
 erDiagram
     user ||--o{ session : "has (Better Auth)"
-    user ||--o{ account : "links Google (Better Auth)"
+    user ||--o{ account : "sign-in methods (Better Auth)"
     user ||--|| progress : "has one"
     user ||--o{ enrollments : "has history"
     sections ||--o{ enrollments : "has history"
@@ -24,8 +24,8 @@ erDiagram
 
     user {
         ObjectId _id
-        string email "from Google"
-        string name "from Google"
+        string email "sign-in email, unique"
+        string name "optional"
         string displayUsername "free-form, shown on completion page"
         string role "student | teacher (TAs = teacher)"
         string timeZone "e.g. America/Denver"
@@ -43,8 +43,8 @@ erDiagram
     account {
         ObjectId _id
         ObjectId userId
-        string providerId "google"
-        string accountId "Google's user id"
+        string providerId "credential, or a later provider"
+        string accountId "id within that provider"
     }
     sections {
         ObjectId _id
