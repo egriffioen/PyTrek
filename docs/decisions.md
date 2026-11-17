@@ -37,15 +37,24 @@ Topics 1–5 are what HW05 and Project 04 use; 6–7 complete Exam 4 coverage.
 
 **Decided:**
 - Content rarely changes (beyond adding a Python basics unit later), so there is
-  **no authoring UI**. Content is written as files and loaded into the database.
+  **no authoring UI**. Content is written as files in the repo and served
+  as **static files with the app** (decided 11/16/2026; not stored in MongoDB).
+  MongoDB holds only user data (accounts, progress, attempts, streaks, badges),
+  which references activities by a stable ID plus a version number. Attempts
+  also store copies of the activity's topic, lesson, and difficulty
+  (denormalized) so stats can be grouped without a content catalog. Trade-off
+  accepted: stats can't show activities nobody has attempted, and old attempts
+  keep the topic they had when they were made.
 - **Independent learners:** anyone can use PyTrek without belonging to a class.
 - **Classes are preferred:** students can be tied to teachers and class sections.
 
 ## 3. Grades, privacy, and teacher visibility (11/16/2026)
 
 **Decision:** PyTrek is never a gradebook. Grades live only in Canvas.
-- Students create an account with any username they want (no limits on
-  nicknames) and can join a class section.
+- Students sign in with Google (see decision 5), which means PyTrek stores
+  their **email address**. They also choose a free-form **display username**
+  (no limits on nicknames), which is what appears on completion pages. They can
+  join a class section.
 - PyTrek stores their progress/scores. Attempts are unlimited.
 - When a student finishes a section, a completion page clearly shows their
   **username, the section, their score, and a timestamp**. Students screenshot
@@ -67,6 +76,9 @@ only after BYU approval.
 - Screenshots can be faked or shared; no verification code for now, only the
   clear username and timestamp for spot checks.
 - Usernames are unrestricted, so a student could choose an identifying name.
+- PyTrek stores students' emails (from Google sign-in), so its data is
+  identifiable and the database must be secured accordingly. Mention this when
+  confirming the setup with the professor.
 - Unlimited attempts mean the score reflects completion, not first-try skill
   (same model as CS 111 reading quizzes).
 
@@ -168,6 +180,24 @@ grade passback, and portability (could run on university-controlled servers).
   cold start after idle). Pilot uses the free `*.run.app` address. Requires a
   Google Cloud billing account (card on file); set a budget alert.
 
+**Login (decided 11/16/2026): Better Auth**, using its official MongoDB adapter.
+- Start with **Sign in with Google only**: one-click sign-in, and Google handles
+  forgotten passwords. Requiring an email is accepted as standard practice.
+- Students pick a free-form display username after first sign-in.
+- **Later, as needed:** add username/password (Better Auth's username plugin;
+  it requires an email and needs an email-sending service for password
+  resets) or other providers such as Microsoft or GitHub.
+- Chosen over Auth.js (in security-only maintenance since Sept 2025, with
+  Better Auth recommended for new projects) and over iron-session/DIY (sessions
+  only, and no Google sign-in).
+
+**Pretend website (decided 11/16/2026):** keep the prototype's approach. Each
+lesson's simulated web pages (HTML, `robots.txt`, data tables) are content
+files. When a lesson opens, the browser loads them into a fake `requests`
+module inside Pyodide, so student code looks like real CS 111 code with no
+internet access needed. The park site can change between lessons as the case
+unfolds. No extra server or database pieces.
+
 **Later / optional:**
 - **Custom domain via Firebase Hosting** in front of Cloud Run ($0 at pilot
   scale; Hosting only, not the Firebase database). Set it up before real
@@ -184,3 +214,31 @@ and the Atlas cluster in the same region (us-central1).
 stats, email-based login); Vercel Hobby (non-commercial only, no Docker);
 Cloudflare Workers (MongoDB driver support too new); load balancer for the
 pilot (fixed ~$18/mo).
+
+## 6. Data model (11/16/2026, in progress)
+
+MongoDB collections: Better Auth's `user`/`session`/`account` (plus PyTrek
+profile fields on `user`), `sections`, `progress`, `attempts`, `bossRuns`,
+`warmups`, `holidays`. Units, lessons, activities, boss questions, badge
+definitions, and pretend web pages are static content files, not in MongoDB.
+The teacher view is a grouping query over `attempts`, hiding groups under 5.
+
+**Decided:**
+- **Student code is not saved** in attempts by default. An activity can opt in
+  (a per-activity flag) only if it requires code for review.
+- **Progress: one document per student**, organized by unit inside the
+  document so it can be split into one document per student per unit later if
+  it grows too large.
+- **Teachers and TAs have the same permissions** for now (a role on the user).
+- **Streaks use each student's own time zone**, detected from the browser and
+  stored on the user.
+
+- **Section membership:** each user stores one `activeSectionId` (the single
+  source of truth for their current section), plus an **`enrollments`**
+  collection (user, section, joined date, left date) that keeps history for
+  retakes and supports future Level 3 rosters. Sections do not store member
+  lists; members are found by querying users (indexed on `activeSectionId`).
+- **Each attempt stores the `sectionId` it was made in**, so stats stay correct
+  when a student retakes the course in a new section. The teacher view groups
+  attempts by `sectionId` and topic, counting distinct students, and hides any
+  group under 5.
