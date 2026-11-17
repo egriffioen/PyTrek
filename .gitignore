@@ -1,3 +1,6 @@
+# Private course research (notes on the private CS 111 repo) - keep local
+research/
+
 # Python
 __pycache__/
 *.py[cod]
