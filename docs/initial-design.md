@@ -302,6 +302,3 @@ stay in the pilot.
 **Collaboration (3+ hours needed by 12/10):** the pitch, in-class
 presentation and feedback, and pilot feedback from CS 111 students and
 classmates count toward it.
-
-## UX sketches (optional)
-*(to be added)*
