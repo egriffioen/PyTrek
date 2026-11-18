@@ -8,4 +8,37 @@ Final project for C S 452: Database Modeling Concepts (BYU).
 
 ## Status
 
-Early planning. See [PROJECT_LOG.md](PROJECT_LOG.md) for work hours.
+Early development. Design docs are in [docs/](docs/) (start with
+[initial-design.md](docs/initial-design.md)); work hours are in
+[PROJECT_LOG.md](PROJECT_LOG.md).
+
+## Tech stack
+
+Next.js (React, TypeScript, Tailwind CSS) · MongoDB Atlas · Pyodide (Python in
+the browser) · Better Auth · Docker on Google Cloud Run.
+
+## Running locally
+
+Requires Node.js 22 and (for the container) Docker.
+
+```bash
+npm install
+```
+
+```bash
+npm run dev
+```
+
+Then open http://localhost:3000.
+
+To run the production Docker image:
+
+```bash
+docker build -t pytrek .
+```
+
+```bash
+docker run --rm -p 8080:8080 pytrek
+```
+
+Then open http://localhost:8080.

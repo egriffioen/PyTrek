@@ -1,0 +1,16 @@
+# Keep the Docker build context small and free of secrets.
+node_modules
+.next
+.git
+.claude
+research
+docs
+PROJECT_LOG.md
+*.md
+!README.md
+.env*
+*.secret.json
+secrets.json
+*.pem
+Dockerfile
+.dockerignore

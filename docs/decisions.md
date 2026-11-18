@@ -198,6 +198,10 @@ grade passback, and portability (could run on university-controlled servers).
   Better Auth recommended for new projects) and over iron-session/DIY (sessions
   only, and no Google sign-in).
 
+**Build setup (decided 11/17/2026):** **TypeScript**, **Tailwind CSS**, the
+**plain MongoDB Node driver** (no Mongoose), and the Next.js app at the
+**repo root** (App Router, `src/` folder).
+
 **Pretend website (decided 11/16/2026):** keep the prototype's approach. Each
 lesson's simulated web pages (HTML, `robots.txt`, data tables) are content
 files. When a lesson opens, the browser loads them into a fake `requests`
