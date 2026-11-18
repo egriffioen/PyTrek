@@ -42,3 +42,15 @@ docker run --rm -p 8080:8080 pytrek
 ```
 
 Then open http://localhost:8080.
+
+## Deploying
+
+Live (pilot): https://pytrek-102065497723.us-central1.run.app
+(health check: `/api/health`)
+
+Deploy to Google Cloud Run (project `pytrek`, region `us-central1`). Cloud Build
+builds the Dockerfile; the database URI comes from Secret Manager:
+
+```bash
+gcloud run deploy pytrek --source . --region us-central1 --allow-unauthenticated --set-secrets "MONGODB_URI=mongodb-uri:latest" --set-env-vars "MONGODB_DB=pytrek"
+```

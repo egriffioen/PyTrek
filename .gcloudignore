@@ -1,0 +1,9 @@
+# Files NOT uploaded to Google Cloud Build when deploying with `gcloud run deploy --source .`
+# Everything in .gitignore (node_modules, .next, .env*, research/, ...) is skipped too.
+.gcloudignore
+.git
+.gitignore
+.claude/
+docs/
+PROJECT_LOG.md
+#!include:.gitignore
