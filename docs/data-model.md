@@ -25,8 +25,8 @@ erDiagram
     user {
         ObjectId _id
         string email "sign-in email, unique"
-        string name "optional"
-        string displayUsername "free-form, shown on completion page"
+        string name "display username, free-form, shown on completion page"
+        bool emailVerified "must be true to sign in"
         string role "student | teacher (TAs = teacher)"
         string timeZone "e.g. America/Denver"
         ObjectId activeSectionId "null for independent learners"
@@ -113,10 +113,13 @@ erDiagram
 ## Collections in detail
 
 ### `user` (Better Auth) + PyTrek profile fields
-Better Auth creates `user`, `session`, and `account`. PyTrek adds:
+Better Auth creates `user`, `session`, `account` (the hashed password lives
+here, `providerId: "credential"`), `verification` (email-verification and
+password-reset tokens), and `rateLimit` (sign-in attempt counters shared across
+Cloud Run copies). Better Auth's built-in `name` field is the student's
+free-form **display username** (shown on the completion page). PyTrek adds:
 | Field | Notes |
 |---|---|
-| `displayUsername` | Free-form nickname; shown on the completion page |
 | `role` | `student` or `teacher` (TAs use `teacher`; same permissions for now) |
 | `timeZone` | Detected from the browser; used for weekday streaks |
 | `activeSectionId` | Current section (single source of truth); `null` for independent learners |

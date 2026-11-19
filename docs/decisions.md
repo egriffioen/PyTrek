@@ -193,6 +193,10 @@ grade passback, and portability (could run on university-controlled servers).
   Auth; email is used to verify the account and reset forgotten passwords.
   Passwords: at least 8 characters, long passphrases allowed; sign-in attempts
   rate-limited.
+- **Sign-in rules (decided 11/18/2026):** email verification is **required
+  before sign-in**; sessions last **30 days** (renewed when used); a password
+  reset **signs out every device**; passwords 8–128 characters; sign-in
+  attempts rate-limited.
 - **Email sending (decided 11/18/2026):** a **dedicated project Gmail account**
   for the pilot ($0, no domain, ~500 emails/day), sent over SMTP with an app
   password. The code uses **generic SMTP settings in environment variables**,

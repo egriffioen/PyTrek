@@ -10,6 +10,8 @@
     "email:test": "node --env-file=.env.local scripts/send-test-email.mjs"
   },
   "dependencies": {
+    "@better-auth/mongo-adapter": "^1.7.26",
+    "better-auth": "^1.7.26",
     "mongodb": "^7.9.0",
     "next": "16.4.6",
     "nodemailer": "^10.6.0",

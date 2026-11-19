@@ -8,8 +8,7 @@ import { getDb } from "@/lib/mongodb";
 export async function GET() {
   const started = Date.now();
   try {
-    const db = await getDb();
-    await db.command({ ping: 1 });
+    await getDb().command({ ping: 1 });
     return Response.json({ status: "ok", database: "ok", ms: Date.now() - started });
   } catch (err) {
     console.error("Health check: database unreachable", err instanceof Error ? err.name : err);
