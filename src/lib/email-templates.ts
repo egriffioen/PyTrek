@@ -9,7 +9,7 @@ function esc(value: string): string {
 
 function layout(heading: string, body: string, buttonText: string, url: string): string {
   return `<!doctype html>
-<html><body style="margin:0;background:#f6f5f1;font-family:Arial,Helvetica,sans-serif;color:#1f2328">
+<html><body style="margin:0;background:#f6f5f1;font-family:'Work Sans',Arial,Helvetica,sans-serif;color:#1f2328">
   <div style="max-width:480px;margin:32px auto;background:#ffffff;border:1px solid #dcd9d0;border-radius:10px;padding:28px">
     <p style="margin:0 0 4px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#2f6f4f;font-weight:bold">PyTrek</p>
     <h1 style="margin:0 0 16px;font-size:20px">${esc(heading)}</h1>
