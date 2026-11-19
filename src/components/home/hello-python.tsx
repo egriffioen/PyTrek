@@ -43,7 +43,8 @@ function trimTraceback(message: string): string {
   return (start === -1 ? lines.slice(-1) : lines.slice(start)).join("\n");
 }
 
-export function HelloPython() {
+/** `challengeBeside`: put Challenge 1 next to the editor instead of above it. */
+export function HelloPython({ challengeBeside = false }: { challengeBeside?: boolean }) {
   const [code, setCode] = useState(STARTER);
   const [status, setStatus] = useState<Status>("idle");
   const [output, setOutput] = useState<{ text: string; isError: boolean } | null>(null);
@@ -121,13 +122,36 @@ export function HelloPython() {
   return (
     <section
       aria-labelledby="try-python"
-      className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
+      className="rounded-xl border border-stone-300 bg-paper p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
     >
       <h2 id="try-python" className="text-lg font-semibold">Try it: your first line of Python</h2>
       <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
         No sign-in needed. Python runs right here in your browser. Edit the code, then press Run.
       </p>
 
+      {/* Stacked: challenge above the editor. Beside: challenge on the left,
+          editor on the right (side by side on wider screens, stacked on phones). */}
+      <div className={challengeBeside ? "mt-4 grid gap-4 md:grid-cols-[2fr_3fr] md:items-start" : ""}>
+      <div className={`${challengeBeside ? "" : "mt-4 "}rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm dark:border-emerald-900 dark:bg-emerald-950`}>
+        <p className="font-semibold text-emerald-800 dark:text-emerald-300">Challenge 1</p>
+        <ol className="mt-1 list-decimal space-y-1 pl-5">
+          <li>Press Run and observe the output.</li>
+          <li>
+            Replace the name{" "}
+            <code className="rounded border border-emerald-300 bg-white px-1.5 py-0.5 font-semibold text-emerald-900 dark:border-emerald-700 dark:bg-neutral-900 dark:text-emerald-200">&quot;ranger&quot;</code>{" "}
+            with
+            your own name.
+          </li>
+          <li>Run again and notice the change!</li>
+        </ol>
+      </div>
+
+      <div>
+      <div className={`${challengeBeside ? "" : "mt-4 "}overflow-hidden rounded-lg border-2 border-neutral-300 focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20 dark:border-neutral-700`}>
+        <div className="flex items-center justify-between border-b border-neutral-300 bg-neutral-100 px-3 py-1.5 text-xs dark:border-neutral-700 dark:bg-neutral-800">
+          <span className="font-mono font-semibold text-neutral-700 dark:text-neutral-200">hello.py</span>
+          <span className="text-neutral-500">✎ click to edit</span>
+        </div>
       <textarea
         value={code}
         onChange={(e) => setCode(e.target.value)}
@@ -140,8 +164,9 @@ export function HelloPython() {
         spellCheck={false}
         rows={4}
         aria-label="Python code"
-        className="mt-4 w-full resize-y rounded-lg border border-neutral-300 bg-neutral-50 p-3 font-mono text-sm leading-relaxed outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 dark:border-neutral-700 dark:bg-neutral-950"
+        className="block w-full resize-y bg-white p-3 font-mono text-sm leading-relaxed outline-none dark:bg-neutral-950"
       />
+      </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <button
@@ -158,17 +183,24 @@ export function HelloPython() {
       </div>
 
       {output && (
-        <pre
-          aria-live="polite"
-          className={`mt-3 overflow-x-auto whitespace-pre-wrap rounded-lg p-3 text-sm ${
-            output.isError
-              ? "bg-red-50 text-red-800 dark:bg-red-950 dark:text-red-200"
-              : "bg-neutral-900 text-emerald-300"
-          }`}
-        >
-          {output.text}
-        </pre>
+        <div className="mt-3">
+          <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-neutral-500">
+            {output.isError ? "Error" : "Output"}
+          </p>
+          <pre
+            aria-live="polite"
+            className={`overflow-x-auto whitespace-pre-wrap rounded-lg p-3 text-sm ${
+              output.isError
+                ? "bg-red-50 text-red-800 dark:bg-red-950 dark:text-red-200"
+                : "bg-neutral-900 text-emerald-300"
+            }`}
+          >
+            {output.text}
+          </pre>
+        </div>
       )}
+      </div>
+      </div>
     </section>
   );
 }

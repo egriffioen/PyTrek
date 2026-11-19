@@ -1,40 +1,32 @@
-import Link from "next/link";
 import { HelloPython } from "@/components/home/hello-python";
+import { AuthButtons, INTRO_TEXT } from "@/components/home/home-content";
 
+/**
+ * PyTrek homepage: deep forest-green banner (intro on the left, sign-up
+ * buttons on the right) over a light sand page, then the "Try it" demo with
+ * Challenge 1 beside the editor. (Chosen over layout B on 11/18/2026.)
+ */
 export default function Home() {
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-6 px-4 py-16">
-      {/* No `uppercase` class here, so "PyTrek" keeps its capitalization. */}
-      <h1 className="text-4xl font-bold tracking-tight text-emerald-700 sm:text-5xl dark:text-emerald-400">
-        Welcome to PyTrek
-      </h1>
-      <p className="text-lg leading-relaxed">
-        Fun, hands-on Python practice for BYU CS 111. Solve{" "}
-        <em>The Case of the Missing Trail Markers</em> by scraping, crawling,
-        and decoding a park website, all in your browser.
-      </p>
+    <main className="flex flex-1 flex-col bg-sand dark:bg-stone-950">
+      <section className="bg-emerald-900 px-4 py-12 text-paper dark:bg-emerald-950">
+        <div className="mx-auto grid max-w-5xl items-center gap-8 md:grid-cols-[3fr_2fr]">
+          <div>
+            {/* No `uppercase` class here, so "PyTrek" keeps its capitalization. */}
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+              Welcome to <span className="text-emerald-300">PyTrek</span>!
+            </h1>
+            <p className="mt-4 text-lg leading-relaxed text-emerald-50">{INTRO_TEXT}</p>
+          </div>
+          <div className="w-full">
+            <AuthButtons onDark stacked />
+          </div>
+        </div>
+      </section>
 
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <Link
-          href="/sign-up"
-          className="rounded-xl bg-emerald-700 px-6 py-4 text-center text-lg font-semibold text-white shadow-sm hover:bg-emerald-800 sm:flex-1"
-        >
-          Create an account
-        </Link>
-        <Link
-          href="/sign-in"
-          className="rounded-xl border-2 border-emerald-700 px-6 py-4 text-center text-lg font-semibold text-emerald-800 hover:bg-emerald-50 sm:flex-1 dark:text-emerald-300 dark:hover:bg-emerald-950"
-        >
-          Sign in
-        </Link>
+      <div className="mx-auto w-full max-w-5xl px-4 py-10">
+        <HelloPython challengeBeside />
       </div>
-
-      <HelloPython />
-
-      <p className="text-sm text-neutral-600 dark:text-neutral-400">
-        Starting with the web scraping unit. More of the CS 111 curriculum to
-        follow.
-      </p>
     </main>
   );
 }
