@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { MAX_NAME_LENGTH } from "@/lib/profile-rules";
 import { Field, Notice, SubmitButton } from "./form-ui";
 
 export function SignUpForm() {
@@ -46,7 +47,7 @@ export function SignUpForm() {
   return (
     <form onSubmit={onSubmit} noValidate={false}>
       {error && <Notice kind="error">{error}</Notice>}
-      <Field label="Display username" name="name" required maxLength={40} autoComplete="nickname"
+      <Field label="Display username" name="name" required maxLength={MAX_NAME_LENGTH} autoComplete="nickname"
         hint="Any name you like. It shows on your completion page." />
       <Field label="Email" name="email" type="email" required autoComplete="email"
         hint="Your BYU email works great." />

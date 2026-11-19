@@ -5,6 +5,7 @@ import { mongodbAdapter } from "@better-auth/mongo-adapter";
 import { getDb, getMongoClient } from "./mongodb";
 import { sendEmail } from "./email";
 import { resetPasswordEmail, verificationEmail } from "./email-templates";
+import { cleanProfile } from "./profile-validation";
 
 const DAY = 60 * 60 * 24;
 
@@ -32,16 +33,32 @@ function createAuth() {
       revokeSessionsOnPasswordReset: true,
       resetPasswordTokenExpiresIn: 60 * 60, // 1 hour
       sendResetPassword: async ({ user, url }) => {
-        await sendEmail(resetPasswordEmail(user.email, user.name, url));
+        // Never throw: an email failure must look the same as "no such
+        // account" (the route also pads response time; see api/auth route).
+        try {
+          await sendEmail(resetPasswordEmail(user.email, user.name, url));
+        } catch (err) {
+          console.error("Password reset email failed:", err instanceof Error ? err.name : err);
+        }
       },
     },
 
     emailVerification: {
       sendOnSignUp: true,
-      sendOnSignIn: true, // re-send if an unverified user tries to sign in
+      // Don't email on every sign-in attempt by an unverified account (anyone
+      // could spam that inbox); students can ask for a resend instead, which
+      // is rate-limited.
+      sendOnSignIn: false,
       autoSignInAfterVerification: true,
       sendVerificationEmail: async ({ user, url }) => {
-        await sendEmail(verificationEmail(user.email, user.name, url));
+        await sendEmail(verificationEmail(user.email, url));
+      },
+    },
+
+    databaseHooks: {
+      user: {
+        create: { before: async (user) => ({ data: cleanProfile(user) }) },
+        update: { before: async (user) => ({ data: cleanProfile(user) }) },
       },
     },
 
@@ -78,11 +95,23 @@ function createAuth() {
       storage: "database", // shared across Cloud Run copies (memory isn't)
       window: 60,
       max: 100,
+      // Limits are per client IP. A whole classroom on campus Wi-Fi can share
+      // one public IP, so sign-up/sign-in allow a class's worth per minute.
       customRules: {
-        "/sign-in/email": { window: 60, max: 5 },
-        "/sign-up/email": { window: 60, max: 5 },
-        "/request-password-reset": { window: 60, max: 3 },
-        "/send-verification-email": { window: 60, max: 3 },
+        "/sign-in/email": { window: 60, max: 60 },
+        "/sign-up/email": { window: 60, max: 60 },
+        "/request-password-reset": { window: 60, max: 10 },
+        "/send-verification-email": { window: 60, max: 10 },
+      },
+    },
+
+    advanced: {
+      ipAddress: {
+        // Cloud Run's front end appends the real client IP to X-Forwarded-For
+        // (after anything the client sent). Skipping Google's load-balancer
+        // ranges from the right gives the real client instead of falling back
+        // to one shared rate-limit bucket for everyone.
+        trustedProxies: ["35.191.0.0/16", "130.211.0.0/22"],
       },
     },
 

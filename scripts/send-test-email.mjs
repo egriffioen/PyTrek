@@ -1,7 +1,9 @@
 // Sends one test email using the SMTP settings in .env.local.
 // Usage:  npm run email:test -- you@example.com
 // Prints only success or the error type; never prints settings or passwords.
+// Uses the same settings parser as the app (src/lib/smtp-config.mjs).
 import nodemailer from "nodemailer";
+import { missingSmtpSettings, smtpOptionsFromEnv } from "../src/lib/smtp-config.mjs";
 
 const to = process.argv[2];
 if (!to) {
@@ -9,20 +11,13 @@ if (!to) {
   process.exit(1);
 }
 
-const need = ["SMTP_HOST", "SMTP_USER", "SMTP_PASS", "EMAIL_FROM"];
-const missing = need.filter((name) => !process.env[name]);
+const missing = missingSmtpSettings();
 if (missing.length) {
   console.log("Missing in .env.local:", missing.join(", "));
   process.exit(1);
 }
 
-const port = Number(process.env.SMTP_PORT || 465);
-const transport = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port,
-  secure: (process.env.SMTP_SECURE ?? String(port === 465)) === "true",
-  auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-});
+const transport = nodemailer.createTransport(smtpOptionsFromEnv());
 
 try {
   await transport.verify();

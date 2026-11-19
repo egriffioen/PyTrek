@@ -29,7 +29,25 @@ export function SignInForm() {
       return;
     }
     if (error.code === "EMAIL_NOT_VERIFIED") {
-      return setError("Please confirm your email first. We just sent you a new confirmation link.");
+      const email = String(form.get("email") || "").trim();
+      return setError(
+        <>
+          Please confirm your email first. Look for the PyTrek email from when you signed up
+          (check spam too).{" "}
+          <button
+            type="button"
+            className="font-medium underline"
+            onClick={async () => {
+              const { error } = await authClient.sendVerificationEmail({ email, callbackURL: "/account" });
+              setError(error?.status === 429
+                ? "Too many requests. Wait a minute and try again."
+                : "If that account needs confirming, we sent a new link. Check your inbox.");
+            }}
+          >
+            Send a new link
+          </button>
+        </>,
+      );
     }
     if (error.status === 429) {
       return setError("Too many attempts. Wait a minute and try again.");

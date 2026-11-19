@@ -22,13 +22,16 @@ function layout(heading: string, body: string, buttonText: string, url: string):
 </body></html>`;
 }
 
-export function verificationEmail(to: string, name: string, url: string): Email {
+// The verification email goes to an address that hasn't been confirmed yet,
+// so it never includes user-typed text (like the display name), which could
+// otherwise be used to send phishing messages from PyTrek's address.
+export function verificationEmail(to: string, url: string): Email {
   return {
     to,
     subject: "Confirm your PyTrek email",
-    text: `Hi ${name},\n\nConfirm your email to start using PyTrek:\n${url}\n\nIf you didn't create a PyTrek account, you can ignore this email.`,
+    text: `Welcome to PyTrek!\n\nConfirm your email to start using PyTrek:\n${url}\n\nIf you didn't create a PyTrek account, you can ignore this email.`,
     html: layout(
-      `Welcome, ${name}!`,
+      "Welcome to PyTrek!",
       `<p style="margin:0">Confirm your email address to start using PyTrek.</p>
        <p style="margin:12px 0 0;font-size:13px;color:#5f6670">If you didn't create a PyTrek account, you can ignore this email.</p>`,
       "Confirm my email",

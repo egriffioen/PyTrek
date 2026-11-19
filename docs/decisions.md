@@ -196,7 +196,12 @@ grade passback, and portability (could run on university-controlled servers).
 - **Sign-in rules (decided 11/18/2026):** email verification is **required
   before sign-in**; sessions last **30 days** (renewed when used); a password
   reset **signs out every device**; passwords 8–128 characters; sign-in
-  attempts rate-limited.
+  attempts rate-limited per client IP (60/minute for sign-in and sign-up,
+  since a classroom on campus Wi-Fi can share one public IP; 10/minute for
+  reset and verification emails). Unverified accounts are not re-emailed on
+  sign-in attempts (a rate-limited "send a new link" button instead), and
+  verification emails never include user-typed text. Display usernames are
+  checked on the server (1–40 characters).
 - **Email sending (decided 11/18/2026):** a **dedicated project Gmail account**
   for the pilot ($0, no domain, ~500 emails/day), sent over SMTP with an app
   password. The code uses **generic SMTP settings in environment variables**,

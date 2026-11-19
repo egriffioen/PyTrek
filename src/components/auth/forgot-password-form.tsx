@@ -20,6 +20,11 @@ export function ForgotPasswordForm() {
     });
     setBusy(false);
     if (error?.status === 429) return setError("Too many requests. Wait a minute and try again.");
+    if (error) {
+      // The server answers the same for real and unknown accounts, so an error
+      // here means the request itself failed (network or server problem).
+      return setError("Something went wrong sending the reset link. Try again in a few minutes.");
+    }
     // Same message whether or not the account exists, so emails can't be guessed.
     setDone(true);
   }
