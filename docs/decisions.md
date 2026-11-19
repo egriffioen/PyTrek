@@ -193,7 +193,13 @@ grade passback, and portability (could run on university-controlled servers).
   Auth; email is used to verify the account and reset forgotten passwords.
   Passwords: at least 8 characters, long passphrases allowed; sign-in attempts
   rate-limited.
-- **Open (decide when building):** which email-sending service.
+- **Email sending (decided 11/18/2026):** a **dedicated project Gmail account**
+  for the pilot ($0, no domain, ~500 emails/day), sent over SMTP with an app
+  password. The code uses **generic SMTP settings in environment variables**,
+  so switching to a real provider (e.g. Resend + a custom domain, ~$10–20/year;
+  Resend supports SMTP) means changing settings only, not code. Considered:
+  Resend (needs a domain; 100/day free cap), Amazon SES (sandbox + production
+  approval), SocketLabs (no lasting free plan).
 - Chosen over Auth.js (in security-only maintenance since Sept 2025, with
   Better Auth recommended for new projects) and over iron-session/DIY (sessions
   only, and no Google sign-in).
@@ -253,3 +259,14 @@ The teacher view is a grouping query over `attempts`, hiding groups under 5.
   when a student retakes the course in a new section. The teacher view groups
   attempts by `sectionId` and topic, counting distinct students, and hides any
   group under 5.
+
+## 7. Database reconfirmed (11/18/2026)
+
+The professor prefers Firebase. Reconsidered and **kept MongoDB Atlas**: the
+anonymous section stats (group by section and topic, count distinct students,
+hide groups under 5) are a single aggregation in MongoDB but awkward in
+Firestore (no group-by or distinct counts; would need counters or Cloud
+Functions). Noted fairly: since moving to email + password, Firebase Auth would
+handle accounts and reset emails for free, and the "no backend" benefit no
+longer applies because PyTrek has a Next.js backend either way. A hybrid
+(Firebase Auth + MongoDB) was considered and not chosen.

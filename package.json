@@ -6,11 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "email:test": "node --env-file=.env.local scripts/send-test-email.mjs"
   },
   "dependencies": {
     "mongodb": "^7.9.0",
     "next": "16.4.6",
+    "nodemailer": "^10.6.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "server-only": "^0.0.1"
