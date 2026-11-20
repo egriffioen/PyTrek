@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { getDb } from "@/lib/mongodb";
 
 /**
@@ -6,6 +7,8 @@ import { getDb } from "@/lib/mongodb";
  * Never returns connection details or error internals.
  */
 export async function GET() {
+  // Always check live: never prerender this at build time (no database there).
+  await connection();
   const started = Date.now();
   try {
     await getDb().command({ ping: 1 });
