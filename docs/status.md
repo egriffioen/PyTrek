@@ -1,6 +1,14 @@
 # PyTrek: project status and next steps
 
-*Last updated: Thursday 11/19/2026 · Hours logged: **13** (target 30–40)*
+*Last updated: Thursday 11/19/2026 · Hours logged: **17** (target 30–40)*
+
+## Questions waiting for you (from 11/19)
+1. **Character names:** keep the placeholders Ruth Calloway (senior ranger), SCOUT-7 (rogue AI), and TrailTalk (review site), or rename?
+2. **Lesson 1 and the story text:** read through the HTTP lesson, Ruth's briefing, and the reviews; change anything that doesn't sound right.
+3. **Link to the lessons:** add a "Start the expedition" button to the homepage or account page? (Nothing links to `/expeditions/web` yet.)
+4. **Hard-coded output:** build the check that reruns student code against a slightly changed site, so printing the answer can't pass?
+5. **Graded-work overlap:** ask the professor whether activities like `robots-01` are too close to HW05.
+6. **Untracked file:** `src/app/Ella_pytrek_logo.svg` is not committed; keep it in the repo or delete it?
 
 ## Where things stand
 
