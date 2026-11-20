@@ -47,12 +47,10 @@ export function SignUpForm() {
   return (
     <form onSubmit={onSubmit} noValidate={false}>
       {error && <Notice kind="error">{error}</Notice>}
-      <Field label="Display username" name="name" required maxLength={MAX_NAME_LENGTH} autoComplete="nickname"
-        hint="Any name you like. It shows on your completion page." />
-      <Field label="Email" name="email" type="email" required autoComplete="email"
-        hint="Your BYU email works great." />
+      <Field label="Username" name="name" required maxLength={MAX_NAME_LENGTH} autoComplete="nickname" />
+      <Field label="Email" name="email" type="email" required autoComplete="email"/>
       <Field label="Password" name="password" type="password" required minLength={8} maxLength={128}
-        autoComplete="new-password" hint="At least 8 characters. A short phrase is easy to remember." />
+        autoComplete="new-password" hint="At least 8 characters." />
       <Field label="Confirm password" name="confirm" type="password" required minLength={8} maxLength={128}
         autoComplete="new-password" />
       <SubmitButton busy={busy}>Create account</SubmitButton>
