@@ -23,7 +23,7 @@ flowchart LR
     teacher["Teacher / TA browser<br/>(anonymous section stats)"]
 
     subgraph gcp["Google Cloud Run (trusted server, Docker container)"]
-        next["Next.js server<br/>pages + static content files<br/>(units, lessons, activities,<br/>boss questions, badges, park sites)"]
+        next["Next.js server<br/>pages + static content files<br/>(expeditions, lessons, activities,<br/>boss questions, badges, park sites)"]
         api["API routes<br/>save attempts, progress, boss runs,<br/>warm-ups, streaks, sections"]
         auth["Better Auth<br/>(sessions, sign-in)"]
         stats["Stats aggregation<br/>(groups under 5 hidden)"]
@@ -57,7 +57,7 @@ flowchart LR
 | Code editor | CodeMirror | Where students edit example and puzzle code |
 | Python runtime | Pyodide in a Web Worker | Runs student Python in the browser; the worker can be stopped for infinite loops and per-question boss timers |
 | Simulated web | Fake `requests` module + content files | Lets students scrape and crawl the park website with no internet access |
-| Lesson content | Static files in the repo | Units, lessons, activities, boss questions, badges, park site pages; versioned in git |
+| Lesson content | Static files in the repo | Expeditions, lessons, activities, boss questions, badges, park site pages; versioned in git |
 | Backend | Next.js API routes on Google Cloud Run (Docker) | Saves attempts/progress, manages sections and streaks, computes stats |
 | Login | Better Auth (MongoDB adapter) | Sign-in, sessions, account linking |
 | Database | MongoDB Atlas | All user data (see [data-model.md](data-model.md)) |
@@ -77,7 +77,7 @@ flowchart LR
 4. **Teacher stats:** the server runs an aggregation over `attempts` for the
    teacher's section and returns only totals, hiding any group under 5 students.
 5. **Grades:** the student screenshots the completion page (display username,
-   unit, best score, timestamp) and uploads it to Canvas.
+   expedition, best score, timestamp) and uploads it to Canvas.
 
 ## Security boundaries
 | Boundary | What's trusted | Protections |

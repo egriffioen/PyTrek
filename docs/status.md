@@ -81,6 +81,8 @@
 - [ ] Keep [PROJECT_LOG.md](../PROJECT_LOG.md) updated through the end
 
 ## Smaller to-dos and open questions
+- [x] Activity names decided 11/19: Expedition → Lesson → Checkpoints ending in a Milestone; data model renamed to `expeditionId` + `stage` ([decisions.md §8](decisions.md#8-names-for-practice-activities-11192026))
+- [x] One lesson per topic: the web expedition has 7 lessons, 7 Milestones, then the boss fight
 - [ ] Narrow the Atlas database user to `readWrite` on `pytrek` only (Atlas → Database Access)
 - [ ] Delete local test accounts from the shared database when testing is done (`+pytrek1` test user)
 - [ ] Ask the CS 111 professor about recruiting students and reusing course problems

@@ -279,3 +279,32 @@ Functions). Noted fairly: since moving to email + password, Firebase Auth would
 handle accounts and reset emails for free, and the "no backend" benefit no
 longer applies because PyTrek has a Next.js backend either way. A hybrid
 (Firebase Auth + MongoDB) was considered and not chosen.
+
+## 8. Names for practice activities (11/19/2026)
+
+Practice activities outside the games (such as the boss fight) use a
+trail-themed hierarchy, so each level has a clear purpose:
+
+- **Expedition**: a full unit, such as the web scraping unit.
+- **Milestone**: a larger activity partway through an expedition, in the
+  middle or at about 1/3 and 2/3 of the way.
+- **Checkpoint**: a short activity along the way, such as the first coding
+  exercise.
+
+The boss fight and the daily warm-up are games, not part of this hierarchy.
+
+**Lessons stay** as a level inside an expedition: each lesson is a run of
+Checkpoints that **ends in a Milestone**, so an expedition has one Milestone
+per lesson. The boss fight ends the expedition.
+
+**One lesson per topic** (decided 11/19/2026): the web expedition has 7
+lessons (one per topic), so 7 Milestones, then the boss fight. Each lesson has
+several Checkpoints mixing the activity types above.
+
+**Data model renamed to match (11/19/2026):** `unitId` → `expeditionId`
+(in `attempts` and `bossRuns`), `progress.units` → `progress.expeditions`, and
+a new `stage` field (`checkpoint` | `milestone`) on attempts, copied from
+content. `lessonId` and `activityType` are unchanged. Renamed now because no
+progress or attempts are stored yet, so there is nothing to migrate. Earlier
+sections of this file still say "unit"; read it as "expedition". The
+submitted [initial-design.md](initial-design.md) is left as submitted.

@@ -4,9 +4,15 @@ PyTrek uses **MongoDB Atlas**. Each box below is a collection. Fields shown as
 `{...}` or `[...]` are **embedded** inside the document; lines between boxes are
 **references** (one document stores another's `_id`).
 
-Lesson content is **not** in MongoDB: units, lessons, activities, boss
+Lesson content is **not** in MongoDB: expeditions, lessons, activities, boss
 questions, badge definitions, and the pretend web pages are static files that
 ship with the app. MongoDB refers to them by ID (e.g. `activityId: "html-04"`).
+
+**Names** (decided 11/19/2026, see [decisions.md §8](decisions.md#8-names-for-practice-activities-11192026)):
+an **expedition** is a unit (e.g. `web`); it contains **lessons**; each lesson
+is a run of short **checkpoint** activities ending in a larger **milestone**
+activity. `stage` records which one an activity is; `activityType` records what
+kind of task it is (a milestone can be a puzzle, for example).
 
 ```mermaid
 erDiagram
@@ -64,7 +70,7 @@ erDiagram
     progress {
         ObjectId _id
         ObjectId userId "unique, one per student"
-        object units "{ unitId: { lessonsOpened, activities, boss } }"
+        object expeditions "{ expeditionId: { lessonsOpened, activities, boss } }"
         date updatedAt
     }
     attempts {
@@ -73,10 +79,11 @@ erDiagram
         ObjectId sectionId "section at time of attempt, or null"
         string activityId
         int activityVersion
-        string unitId "copied from content"
+        string expeditionId "copied from content"
         string lessonId "copied from content"
         string topic "copied from content"
         string difficulty "copied from content"
+        string stage "checkpoint | milestone, copied from content"
         string activityType "tweak | fix | finish | concept | puzzle"
         bool correct
         int durationMs
@@ -88,7 +95,7 @@ erDiagram
         ObjectId _id
         ObjectId userId
         ObjectId sectionId
-        string unitId
+        string expeditionId
         array questions "[{ questionId, version, difficulty, correct, timeMs, timedOut }]"
         string outcome "won | lost | abandoned"
         float percentCorrect
@@ -135,12 +142,12 @@ One document per student per section joined: `userId`, `sectionId`,
 `joinedAt`, `leftAt`. Keeps retake history and supports future Level 3 rosters.
 
 ### `progress` (one per student)
-Organized by unit so it can be split into one document per student per unit
+Organized by expedition so it can be split into one document per student per expedition
 later if it grows too large:
 ```json
 {
   "userId": "…",
-  "units": {
+  "expeditions": {
     "web": {
       "lessonsOpened": ["web-01", "web-02"],
       "activities": {
@@ -153,10 +160,10 @@ later if it grows too large:
 }
 ```
 `boss.completedAt` is a **server timestamp**; the completion page shows it with
-the display username, unit, and best percent for the Canvas screenshot.
+the display username, expedition, and best percent for the Canvas screenshot.
 
 ### `attempts`
-Every try at an activity (unlimited). Topic, lesson, unit, and difficulty are
+Every try at an activity (unlimited). Expedition, lesson, topic, stage, and difficulty are
 **copied** from the content file when the attempt is saved, so stats can be
 grouped without a content catalog. `sectionId` is the section the student was
 in at that moment. `code` is saved only when an activity opts in.
@@ -185,7 +192,7 @@ calendar).
 | `progress` | `userId` (unique) | One progress document per student |
 | `attempts` | `{ sectionId, topic }` | Teacher stats |
 | `attempts` | `{ userId, activityId }` | A student's history on an activity |
-| `bossRuns` | `{ userId, unitId }` | Best run per unit |
+| `bossRuns` | `{ userId, expeditionId }` | Best run per expedition |
 | `warmups` | `{ userId, localDate }` (unique) | One warm-up per day |
 
 ## The teacher view query (anonymous, minimum group of 5)
