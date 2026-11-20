@@ -53,8 +53,10 @@
 - [x] Lesson content format (11/19): Markdown activity files + YAML in [content/](../content/README.md), validated at build; every activity cites CS 111 sources ([decisions.md §9](decisions.md#9-lesson-content-format-and-cs-111-sources-11192026))
 - [x] Eight lessons laid out (added **Images**); prototype's 5 activities ported + 1 concept check; checks verified against reference solutions
 - [ ] Test `byuimage` in Pyodide (needs Pillow 12; ours ships older) before writing the Images lesson
-- [ ] CodeMirror editor + Pyodide worker (reuse the homepage demo's worker approach) + the simulated web (`requests` + BeautifulSoup)
-- [ ] Lesson page with the progress bar (reads `src/lib/content.ts`; runs each activity's `preload`, then the student's code, then `check`)
+- [x] CodeMirror editor + Pyodide worker ([src/lib/python-runner.ts](../src/lib/python-runner.ts): harness → preload → student code → check, 10 s limit) + the simulated web (`requests` + BeautifulSoup)
+- [x] Lesson pages built 11/19: `/expeditions/web` (lesson list) and `/expeditions/web/<lesson>` (progress bar, coding + concept activities, hints, feedback). **Lesson 1 (HTTP) complete:** 5 checkpoints + milestone, tested in the browser
+- [ ] Progress is **browser-only for now** ([src/lib/local-progress.ts](../src/lib/local-progress.ts)); replace with the attempts/progress API below
+- [ ] Link to the expedition from the homepage / account page (nothing links to `/expeditions/web` yet)
 - [ ] API + MongoDB writes for `attempts` and `progress` (per [data-model.md](data-model.md))
 - [ ] Sections: create with a join code, join, `enrollments`, `activeSectionId`
 

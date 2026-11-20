@@ -7,6 +7,7 @@ export type Stage = "checkpoint" | "milestone";
 export type ActivityType = "example" | "tweak" | "fix" | "finish" | "concept" | "puzzle";
 export type Difficulty = "easy" | "medium" | "hard";
 
+/** `text` and `feedback` are inline HTML. */
 export type Choice = { text: string; correct: boolean; feedback?: string };
 
 export type Activity = {
@@ -25,7 +26,7 @@ export type Activity = {
   /** Earlier activity IDs whose passing code runs first, in order (includes what those use). */
   preload: string[];
   lessonId: string;
-  /** Markdown */
+  /** HTML (converted from the Markdown in content/ at build time). */
   story: string | null;
   learn: string | null;
   task: string;

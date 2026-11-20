@@ -2,4 +2,4 @@ id: http
 title: "Why the Pages Went Missing"
 topic: http
 summary: How browsers and programs ask servers for pages, and what status codes like 404 mean.
-activities: [status-codes]
+activities: [client-server, first-request, status-codes, methods, trail-report, vanished-pages]

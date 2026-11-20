@@ -46,3 +46,29 @@ samp,
 .cm-scroller {
   font-family: var(--font-mono);
 }
+
+/* Lesson text rendered from content/ Markdown (story, learn, task, hints). */
+.prose-pytrek p + p {
+  margin-top: 0.6em;
+}
+.prose-pytrek strong {
+  font-weight: 700;
+}
+.prose-pytrek code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  border-radius: 0.3rem;
+  padding: 0.05em 0.35em;
+  background: rgb(0 0 0 / 0.06);
+  /* Long URLs in code must wrap on phones instead of widening the page. */
+  overflow-wrap: anywhere;
+}
+@media (prefers-color-scheme: dark) {
+  .prose-pytrek code {
+    background: rgb(255 255 255 / 0.1);
+  }
+}
+/* Ranger story notes use the handwriting font; keep code in them readable. */
+.font-ranger code {
+  font-size: 0.8em;
+}

@@ -5,6 +5,7 @@
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import { parse as parseYaml } from "yaml";
+import { marked } from "marked";
 import { z } from "zod";
 
 const slug = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "use lowercase-words-with-dashes");
@@ -242,17 +243,21 @@ export function loadContent(contentDir) {
         const hints = parsed.sections.hints
           ? parsed.sections.hints.split(/^- /m).map((h) => h.trim()).filter(Boolean)
           : [];
+        // Text fields are Markdown in the files and HTML in the build output.
+        // Content is ours (reviewed in git), so its HTML is trusted.
+        const block = (md) => (md ? marked.parse(md, { async: false }).trim() : null);
+        const inline = (md) => marked.parseInline(md, { async: false });
         activities.push({
           ...a,
           lessonId,
           preload: preloadOf.get(a.id),
-          story: parsed.sections.story ?? null,
-          learn: parsed.sections.learn ?? null,
-          task: parsed.sections.task ?? "",
-          hints,
+          story: block(parsed.sections.story),
+          learn: block(parsed.sections.learn),
+          task: block(parsed.sections.task) ?? "",
+          hints: hints.map(block),
           starter: parsed.code.starter ?? null,
           check: parsed.code.check ?? null,
-          choices: a.choices ?? null,
+          choices: a.choices?.map((c) => ({ ...c, text: inline(c.text), feedback: c.feedback ? inline(c.feedback) : undefined })) ?? null,
         });
       }
 
