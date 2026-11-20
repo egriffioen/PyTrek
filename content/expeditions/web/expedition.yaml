@@ -1,0 +1,16 @@
+id: web
+title: "The Case of the Missing Trail Markers"
+summary: >-
+  CS 111's web unit: HTTP, HTML and BeautifulSoup, URLs, robots.txt, crawling,
+  images, charts, and regular expressions.
+story: >-
+  Someone has been tampering with the park's website: trail pages point the
+  wrong way, pages have vanished, and hikers are getting lost. As a junior
+  ranger-detective, you'll track down the culprit, a rogue AI agent that
+  ignored robots.txt, and shut it down.
+# Simulated website the fake `requests` module serves (https://trailnet.test).
+site: site
+# Python loaded before every activity: fake requests + helpers for checks.
+harness: harness.py
+# Recommended order (students may open any lesson). Draft order follows the story.
+lessons: [http, html, urls, robots, crawling, images, charts, regex]

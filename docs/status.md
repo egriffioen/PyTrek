@@ -50,22 +50,25 @@
 - [x] Rate limit sees each visitor's real IP on Cloud Run (a spoofed `X-Forwarded-For` was ignored; checked 11/19)
 
 ### 2. Build the core lesson experience (11/21–11/24)
-- [ ] Decide the lesson content file format (JSON or Markdown + JSON)
+- [x] Lesson content format (11/19): Markdown activity files + YAML in [content/](../content/README.md), validated at build; every activity cites CS 111 sources ([decisions.md §9](decisions.md#9-lesson-content-format-and-cs-111-sources-11192026))
+- [x] Eight lessons laid out (added **Images**); prototype's 5 activities ported + 1 concept check; checks verified against reference solutions
+- [ ] Test `byuimage` in Pyodide (needs Pillow 12; ours ships older) before writing the Images lesson
 - [ ] CodeMirror editor + Pyodide worker (reuse the homepage demo's worker approach) + the simulated web (`requests` + BeautifulSoup)
-- [ ] Lesson page with the progress bar; port the prototype's 5 checkpoints as the first lesson
+- [ ] Lesson page with the progress bar (reads `src/lib/content.ts`; runs each activity's `preload`, then the student's code, then `check`)
 - [ ] API + MongoDB writes for `attempts` and `progress` (per [data-model.md](data-model.md))
 - [ ] Sections: create with a join code, join, `enrollments`, `activeSectionId`
 
 ### 3. Content over Thanksgiving (light, 11/25–11/28; off Thursday)
+- [ ] Fill gaps shown by `npm run content:coverage -- --gaps` (27 of 133 CS 111 items covered on 11/19); each lesson needs a Milestone
 - [ ] Write the story beats for *The Case of the Missing Trail Markers*
-- [ ] Lessons for all 7 web-unit topics: HTML + BeautifulSoup, URLs, `robots.txt`, crawling, HTTP, regex, data visualization
+- [ ] Lessons for all 8 web-unit topics: HTTP, HTML + BeautifulSoup, URLs, `robots.txt`, crawling, images, charts, regex
 - [ ] Activities: run examples, one-change tweaks, fix the bug / finish the code, concept checks, and the chosen puzzles
 
 ### 4. Pilot launch (Mon 11/30 – Tue 12/1)
 - [ ] Boss fight: timed questions, easy/medium/hard, health, restart on loss, best score
 - [ ] Completion page: display username, unit, best score, server timestamp
 - [ ] Full end-to-end test on Cloud Run
-- [ ] **Confirm the pilot setup with the professor** (and ideally BYU's Registrar's Office) before real students use it
+- [ ] **Confirm the pilot setup with the professor**, including that activities don't give away HW05 / Project 04 answers (`robots-01` is close to HW05's `can_follow_link`) (and ideally BYU's Registrar's Office) before real students use it
 - [ ] **Pilot live Tuesday 12/1**; share the link with CS 111 students
 
 ### 5. After the pilot (12/2–12/7)
@@ -90,7 +93,7 @@
 - [ ] Ask the CS 111 professor about recruiting students and reusing course problems
 - [ ] Holiday dates list for streaks (BYU academic calendar)
 - [ ] Later: custom domain via Firebase Hosting; Resend + domain for email; BYU sign-in (needs BYU IT)
-- [ ] Copy the web-unit prototype into the repo before its temporary folder disappears
+- [x] Web-unit prototype copied to [prototype/web-trail/](../prototype/web-trail/index.html)
 
 ## Running it locally
 ```bash

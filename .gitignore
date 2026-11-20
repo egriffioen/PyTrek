@@ -68,3 +68,6 @@ next-env.d.ts
 
 # Cloud Run settings with real values (template: deploy/cloudrun-env.example.yaml)
 deploy/cloudrun-env.yaml
+
+# Built from content/ by scripts/content/build-content.mjs
+/src/generated/

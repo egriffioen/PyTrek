@@ -1,0 +1,5 @@
+id: urls
+title: "Following the Signposts"
+topic: urls
+summary: Take URLs apart with urlparse and turn relative links into full ones with urljoin.
+activities: [read-the-signs]

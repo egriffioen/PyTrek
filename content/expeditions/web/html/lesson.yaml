@@ -1,0 +1,5 @@
+id: html
+title: "Inspecting the Evidence"
+topic: html
+summary: Read a page's HTML and pull out text, tags, and attributes with BeautifulSoup.
+activities: [trailhead-title]

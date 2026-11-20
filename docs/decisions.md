@@ -308,3 +308,41 @@ content. `lessonId` and `activityType` are unchanged. Renamed now because no
 progress or attempts are stored yet, so there is nothing to migrate. Earlier
 sections of this file still say "unit"; read it as "expedition". The
 submitted [initial-design.md](initial-design.md) is left as submitted.
+
+## 9. Lesson content format and CS 111 sources (11/19/2026)
+
+**Eight lessons.** The web expedition adds an **Images** lesson, because
+Project 04 Part 3 (find, download, filter, and save images with BYU's
+`byuimage` library) and Lecture 24 rely on it. `byuimage` is one pure-Python
+file on top of Pillow, which Pyodide includes, so it can run in the browser
+(it asks for Pillow 12; install it without that version check or bundle the
+file, and test when the lesson is built). Lesson order lives in one file, so
+it is easy to change; the first draft follows the story: HTTP → HTML +
+BeautifulSoup → URLs → robots.txt → Crawling → Images → Charts → Regex.
+
+**Format (may still be adjusted).** Content lives in `content/`, versioned in
+git, never in MongoDB:
+- `content/expeditions/<id>/expedition.yaml`: title, story, lesson order, and
+  the simulated site folder.
+- `content/expeditions/<id>/<lesson>/lesson.yaml`: lesson title, topic, and
+  activity order (Checkpoints, then one Milestone last).
+- One **Markdown file per activity** with a YAML header (id, version, stage,
+  type, difficulty, sources, functions it provides or uses) and sections for
+  the story, the short teaching text, the task, starter code, the hidden check,
+  and hints. Python stays readable (no escaping, unlike JSON).
+- A build step validates every file (missing or misspelled fields fail the
+  build) and turns the content into one JSON file the app imports.
+
+**Every activity cites its CS 111 sources.** `content/sources/cs111-web.yaml`
+lists every source item by ID: reading quiz sections, lab problems, lectures,
+HW05, P04, and PC4 parts. Activities reference those IDs (for example
+`lab/hyperlinks#Q8`), and the build rejects unknown IDs. `npm run
+content:coverage` lists each source item with the activities that cover it, so
+gaps are visible. The public repo holds only these IDs and PyTrek's own short
+labels, never CS 111's quiz or assignment text (the course repo is private).
+
+**Graded-work caution.** The pilot (12/1) comes just before HW05 (12/4), P04
+(12/7), PC4 (12/9), and Exam 4 (12/10). Activities teach the same skills on the
+park site but should not hand out working answers to graded functions
+(`parse_robots`, `can_follow_link`, the P04 crawler). Confirm with the
+professor before the pilot.

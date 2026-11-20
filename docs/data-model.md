@@ -6,7 +6,7 @@ PyTrek uses **MongoDB Atlas**. Each box below is a collection. Fields shown as
 
 Lesson content is **not** in MongoDB: expeditions, lessons, activities, boss
 questions, badge definitions, and the pretend web pages are static files that
-ship with the app. MongoDB refers to them by ID (e.g. `activityId: "html-04"`).
+ship with the app ([content/](../content/README.md)). MongoDB refers to them by ID (e.g. `activityId: "html-04"`).
 
 **Names** (decided 11/19/2026, see [decisions.md §8](decisions.md#8-names-for-practice-activities-11192026)):
 an **expedition** is a unit (e.g. `web`); it contains **lessons**; each lesson
@@ -84,7 +84,7 @@ erDiagram
         string topic "copied from content"
         string difficulty "copied from content"
         string stage "checkpoint | milestone, copied from content"
-        string activityType "tweak | fix | finish | concept | puzzle"
+        string activityType "example | tweak | fix | finish | concept | puzzle"
         bool correct
         int durationMs
         int hintsUsed

@@ -8,6 +8,8 @@ docs
 PROJECT_LOG.md
 *.md
 !README.md
+# Lesson activities are Markdown and must reach the build.
+!content/**/*.md
 .env*
 *.secret.json
 secrets.json

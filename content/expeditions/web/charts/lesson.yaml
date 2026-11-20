@@ -1,0 +1,5 @@
+id: charts
+title: "Plotting the Edit Log"
+topic: charts
+summary: Turn scraped data into line, bar, and scatter charts with matplotlib.
+activities: []

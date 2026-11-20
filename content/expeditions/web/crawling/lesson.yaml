@@ -1,0 +1,5 @@
+id: crawling
+title: "Mapping the Park"
+topic: crawling
+summary: Visit every public page by following links, without repeats or forbidden pages.
+activities: [map-the-park, summit-code]

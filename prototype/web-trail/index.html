@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PyTrek Web Trail</title>
+<style>
+  :root {
+    --bg: #f6f5f1; --panel: #ffffff; --ink: #1f2328; --muted: #5f6670;
+    --line: #dcd9d0; --accent: #2f6f4f; --accent-ink: #ffffff;
+    --code-bg: #fbfaf7; --ok: #1f7a3d; --ok-bg: #e6f4ea; --bad: #a33a2a; --bad-bg: #fbeae6;
+    --chip: #eef0ea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15181b; --panel: #1d2125; --ink: #e6e6e3; --muted: #9aa1a8;
+      --line: #30363c; --accent: #5fb88a; --accent-ink: #0f1a14;
+      --code-bg: #171a1d; --ok: #7fd49d; --ok-bg: #1b3326; --bad: #f0a090; --bad-bg: #3a201b;
+      --chip: #262b30;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 14px 16px; border-bottom: 1px solid var(--line); display: flex;
+    align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  header h1 { margin: 0; font-size: 18px; }
+  header .sub { color: var(--muted); font-size: 13px; }
+  #status { margin-left: auto; font-size: 13px; color: var(--muted); }
+  .wrap { display: grid; grid-template-columns: 220px minmax(0, 1fr) minmax(0, 360px);
+    gap: 16px; padding: 16px; max-width: 1400px; margin: 0 auto; }
+  @media (max-width: 1100px) { .wrap { grid-template-columns: 200px minmax(0, 1fr); }
+    .inspector { grid-column: 1 / -1; } }
+  @media (max-width: 700px) { .wrap { grid-template-columns: 1fr; } }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+  nav ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  nav button { width: 100%; text-align: left; background: none; border: 1px solid transparent;
+    color: var(--ink); padding: 8px 10px; border-radius: 8px; cursor: pointer; font: inherit; }
+  nav button:hover { background: var(--chip); }
+  nav button.active { border-color: var(--accent); background: var(--chip); }
+  nav .mark { display: inline-block; width: 18px; color: var(--ok); }
+  nav h2, .inspector h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--muted); margin: 0 0 10px; }
+  .story { color: var(--muted); font-style: italic; margin: 0 0 10px; }
+  main h2 { margin: 0 0 6px; font-size: 20px; }
+  .teach { background: var(--chip); border-radius: 8px; padding: 10px 12px; margin: 10px 0; font-size: 14px; }
+  .task { margin: 10px 0; }
+  code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 13px; }
+  :not(pre) > code { background: var(--chip); padding: 1px 4px; border-radius: 4px; }
+  textarea { width: 100%; min-height: 300px; resize: vertical; background: var(--code-bg); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px;
+    font: 13px/1.5 ui-monospace, "Cascadia Code", Consolas, monospace; tab-size: 4; }
+  .buttons { display: flex; gap: 8px; margin: 10px 0; flex-wrap: wrap; align-items: center; }
+  .buttons button { font: inherit; padding: 7px 14px; border-radius: 8px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+  .buttons button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .buttons button:disabled { opacity: .5; cursor: wait; }
+  .kbd { font-size: 12px; color: var(--muted); }
+  pre.out { background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px;
+    min-height: 60px; max-height: 260px; overflow: auto; white-space: pre-wrap; margin: 0;
+    font: 13px/1.45 ui-monospace, Consolas, monospace; }
+  pre.out .err { color: var(--bad); }
+  .verdict { margin-top: 10px; padding: 10px 12px; border-radius: 8px; display: none; }
+  .verdict.ok { display: block; background: var(--ok-bg); color: var(--ok); }
+  .verdict.bad { display: block; background: var(--bad-bg); color: var(--bad); }
+  .hint { display: none; margin-top: 10px; padding: 10px 12px; border-left: 3px solid var(--accent); background: var(--chip); }
+  .inspector select { width: 100%; font: inherit; padding: 6px; border-radius: 6px; border: 1px solid var(--line);
+    background: var(--panel); color: var(--ink); margin-bottom: 8px; }
+  .inspector pre { max-height: 520px; }
+  .inspector p { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>PyTrek: The Web Trail</h1>
+  <span class="sub">Prototype: scrape and crawl a pretend website, right in your browser</span>
+  <span id="status">Starting Python…</span>
+</header>
+
+<div class="wrap">
+  <nav class="panel">
+    <h2>Checkpoints</h2>
+    <ol id="steps"></ol>
+  </nav>
+
+  <main class="panel">
+    <p class="story" id="story"></p>
+    <h2 id="title"></h2>
+    <div class="teach" id="teach"></div>
+    <div class="task" id="task"></div>
+    <textarea id="code" spellcheck="false" aria-label="Your Python code"></textarea>
+    <div class="buttons">
+      <button class="primary" id="run" disabled>Run &amp; check</button>
+      <button id="reset">Reset code</button>
+      <button id="hintBtn">Hint</button>
+      <span class="kbd">Ctrl+Enter runs</span>
+    </div>
+    <pre class="out" id="out" aria-live="polite"></pre>
+    <div class="verdict" id="verdict"></div>
+    <div class="hint" id="hint"></div>
+  </main>
+
+  <aside class="panel inspector">
+    <h2>Page source viewer</h2>
+    <p>Every page on <code>trailnet.test</code>. This is what <code>requests.get(url).text</code> gives you.</p>
+    <select id="pageSel" aria-label="Choose a page"></select>
+    <pre class="out" id="pageSrc"></pre>
+  </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<script>
+// ---------- The pretend website (in a real app this would come from the database) ----------
+const SITE = {
+  "/robots.txt": `User-agent: *
+Disallow: /ranger/
+Disallow: /drafts/
+`,
+  "/": `<html>
+<head><title>TrailNet Home</title></head>
+<body>
+  <h1>Welcome to TrailNet</h1>
+  <p>Your guide to the trails of Pythonia National Park.</p>
+  <ul>
+    <li><a href="/trails/">All trails</a></li>
+    <li><a href="about.html">About us</a></li>
+    <li><a href="/ranger/log.html">Ranger log (staff only)</a></li>
+    <li><a href="https://example.com/maps">Printable maps (another site)</a></li>
+  </ul>
+</body>
+</html>`,
+  "/about.html": `<html>
+<head><title>About TrailNet</title></head>
+<body>
+  <h1>About</h1>
+  <p>TrailNet is run by volunteer rangers.</p>
+  <a href="/">Back home</a>
+</body>
+</html>`,
+  "/trails/": `<html>
+<head><title>All Trails</title></head>
+<body>
+  <h1>Trails</h1>
+  <ul>
+    <li><a href="aspen-loop.html">Aspen Loop</a> (easy)</li>
+    <li><a href="cedar-ridge.html">Cedar Ridge</a> (hard)</li>
+    <li><a href="old-trail.html">Old Trail</a> (closed)</li>
+  </ul>
+  <a href="/">Home</a>
+</body>
+</html>`,
+  "/trails/aspen-loop.html": `<html>
+<head><title>Aspen Loop</title></head>
+<body>
+  <h1>Aspen Loop</h1>
+  <table>
+    <tr><th>Distance</th><th>Elevation gain</th></tr>
+    <tr><td>2.1 mi</td><td>180 ft</td></tr>
+  </table>
+  <p>Want more of a challenge? Try <a href="cedar-ridge.html">Cedar Ridge</a>.</p>
+  <a href="/">Home</a>
+</body>
+</html>`,
+  "/trails/cedar-ridge.html": `<html>
+<head><title>Cedar Ridge</title></head>
+<body>
+  <h1>Cedar Ridge</h1>
+  <table>
+    <tr><th>Distance</th><th>Elevation gain</th></tr>
+    <tr><td>6.4 mi</td><td>2,150 ft</td></tr>
+  </table>
+  <p>A side path leads to <a href="hidden-falls.html">Hidden Falls</a>.</p>
+  <p>Coming soon: <a href="/drafts/new-trail.html">a brand new trail</a>.</p>
+</body>
+</html>`,
+  "/trails/hidden-falls.html": `<html>
+<head><title>Hidden Falls</title></head>
+<body>
+  <h1>Hidden Falls</h1>
+  <p>You made it to the falls.</p>
+  <p class="clue">Summit code: BRISTLECONE</p>
+  <a href="/trails/">Back to all trails</a>
+</body>
+</html>`,
+  "/ranger/log.html": `<html>
+<head><title>Ranger Log</title></head>
+<body>
+  <h1>Ranger Log</h1>
+  <p class="clue">Summit code: RANGERS-ONLY</p>
+</body>
+</html>`,
+  "/drafts/new-trail.html": `<html>
+<head><title>Draft: New Trail</title></head>
+<body><p>Not ready yet.</p></body>
+</html>`,
+};
+
+// ---------- Checkpoints ----------
+const STEPS = [
+  {
+    title: "1. Arrive at the trailhead",
+    story: "You've been hired to build a trail guide for Pythonia National Park. First stop: the park's website.",
+    teach: `<code>requests.get(url)</code> downloads a page. <code>.text</code> is its HTML as a string.
+      <code>BeautifulSoup(html, "html.parser")</code> turns that string into something you can search.
+      <code>soup.title</code> is the page's <code>&lt;title&gt;</code> tag.`,
+    task: `Print the <b>text</b> of the homepage's <code>&lt;title&gt;</code> tag (just the words, not the tag).`,
+    starter: `import requests
+from bs4 import BeautifulSoup
+
+response = requests.get("https://trailnet.test/")
+soup = BeautifulSoup(response.text, "html.parser")
+
+# TODO: print the text inside the page's <title> tag
+`,
+    hint: `<code>soup.title</code> gives you the whole tag. Add <code>.get_text()</code> (or <code>.string</code>) to get only the words inside it.`,
+  },
+  {
+    title: "2. Read the trail signs",
+    story: "Every page has signposts (links) pointing to other pages. Some are written as full addresses, some are shortcuts.",
+    teach: `<code>soup.find_all("a")</code> returns every link tag. <code>tag.get("href")</code> reads its address.
+      Many hrefs are <b>relative</b> like <code>aspen-loop.html</code>. <code>urljoin(page_url, href)</code>
+      turns them into full URLs: <code>urljoin("https://trailnet.test/trails/", "aspen-loop.html")</code>
+      → <code>"https://trailnet.test/trails/aspen-loop.html"</code>.`,
+    task: `Write <code>get_links(url)</code> that downloads the page and returns a <b>list of absolute URLs</b> for every link on it.`,
+    starter: `import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+
+def get_links(url):
+    """Return a list of absolute URLs for every <a href> on the page at url."""
+    # TODO
+    return []
+
+print(get_links("https://trailnet.test/trails/"))
+`,
+    hint: `Loop over <code>soup.find_all("a")</code>. For each tag, get its href and append <code>urljoin(url, href)</code> to a list. Skip tags with no href.`,
+  },
+  {
+    title: "3. Check the ranger rules",
+    story: "The rangers posted rules at the trailhead. Polite explorers (and polite programs) follow them.",
+    teach: `Sites list the places bots shouldn't go in <code>/robots.txt</code>. Each <code>Disallow: /some/path/</code>
+      line means "don't visit any URL whose path starts with this." <code>urlparse(url).path</code> gives you the path part of a URL.
+      Open <code>/robots.txt</code> in the page source viewer to see the rules.`,
+    task: `Write <code>is_allowed(url)</code> that downloads <code>https://trailnet.test/robots.txt</code> and returns
+      <code>False</code> if the URL's path starts with any disallowed path, otherwise <code>True</code>.`,
+    starter: `import requests
+from urllib.parse import urlparse
+
+def is_allowed(url):
+    """Return True if robots.txt lets us visit url."""
+    rules = requests.get("https://trailnet.test/robots.txt").text
+    path = urlparse(url).path
+    # TODO: check each "Disallow:" line in rules
+    return True
+
+print(is_allowed("https://trailnet.test/trails/"))      # should be True
+print(is_allowed("https://trailnet.test/ranger/log.html"))  # should be False
+`,
+    hint: `Use <code>rules.splitlines()</code>. For lines that start with <code>"Disallow:"</code>, take the part after the colon,
+      <code>.strip()</code> it, and check <code>path.startswith(...)</code>.`,
+  },
+  {
+    title: "4. Map the whole park",
+    story: "Time to map every public trail page, starting from the homepage and following signposts.",
+    teach: `A <b>crawler</b> keeps a list of pages <i>to visit</i> and a set of pages <i>already visited</i>.
+      Pop a URL, skip it if you've seen it, fetch it, then add its links to the to-visit list.
+      Your <code>get_links()</code> and <code>is_allowed()</code> from checkpoints 2 and 3 are already loaded, so reuse them!`,
+    task: `Write <code>crawl(start)</code> that returns a <b>set</b> of every page it successfully visited. Only visit pages that are
+      on <code>trailnet.test</code>, allowed by robots.txt, and return <code>status_code == 200</code>.`,
+    starter: `import requests
+from urllib.parse import urlparse
+# get_links(url) and is_allowed(url) from earlier checkpoints are already loaded.
+
+def crawl(start):
+    to_visit = [start]
+    visited = set()
+    while to_visit:
+        url = to_visit.pop()
+        # TODO: skip pages you've seen, other websites, and disallowed pages
+        # TODO: fetch the page; only keep it if status_code is 200
+        # TODO: add its links to to_visit
+    return visited
+
+pages = crawl("https://trailnet.test/")
+print(len(pages), "pages found")
+for page in sorted(pages):
+    print(page)
+`,
+    hint: `Inside the loop: <code>if url in visited: continue</code>. Check <code>urlparse(url).hostname == "trailnet.test"</code> and
+      <code>is_allowed(url)</code>. Then <code>response = requests.get(url)</code>; if <code>response.status_code == 200</code>,
+      add it to <code>visited</code> and <code>to_visit.extend(get_links(url))</code>.`,
+  },
+  {
+    title: "5. Find the summit code",
+    story: "Somewhere on a public trail page, a ranger hid a summit code. Find it without sneaking into staff-only pages.",
+    teach: `<code>soup.find_all("p", class_="clue")</code> finds paragraphs with <code>class="clue"</code>.
+      Your <code>crawl()</code> from checkpoint 4 is loaded, so you can loop over every public page.`,
+    task: `Print the summit code hidden on the park's public pages.`,
+    starter: `import requests
+from bs4 import BeautifulSoup
+# crawl(start) from checkpoint 4 is already loaded.
+
+for url in crawl("https://trailnet.test/"):
+    # TODO: fetch the page, look for <p class="clue">, and print what it says
+    pass
+`,
+    hint: `For each url: make a soup from <code>requests.get(url).text</code>, then
+      <code>for clue in soup.find_all("p", class_="clue"): print(clue.get_text())</code>.`,
+  },
+];
+
+// ---------- Python side: fake `requests`, runner, and checks ----------
+const HARNESS = String.raw`
+import sys, types, json, io, contextlib, traceback, linecache
+from urllib.parse import urlparse, urldefrag
+
+SITE = json.loads(SITE_JSON)
+HOST = "trailnet.test"
+B = "https://trailnet.test"
+LOG = []
+
+class HTTPError(Exception):
+    pass
+
+class Response:
+    def __init__(self, url, status_code, text):
+        self.url, self.status_code, self.text = url, status_code, text
+        self.content = text.encode()
+        self.ok = status_code < 400
+        self.headers = {"Content-Type": "text/plain" if url.endswith(".txt") else "text/html"}
+    def raise_for_status(self):
+        if not self.ok:
+            raise HTTPError(f"{self.status_code} Client Error: Not Found for url: {self.url}")
+    def __repr__(self):
+        return f"<Response [{self.status_code}]>"
+
+def get(url, *args, **kwargs):
+    if not isinstance(url, str):
+        raise TypeError(f"url must be a string, not {type(url).__name__}")
+    url, _ = urldefrag(url)
+    p = urlparse(url)
+    if p.scheme not in ("http", "https"):
+        raise ValueError(f"Invalid URL {url!r}: No scheme supplied. Perhaps you meant https://{url}?")
+    if p.hostname != HOST:
+        raise ConnectionError(f"Can't reach {p.hostname}. This practice sandbox only contains https://{HOST}")
+    LOG.append(url)
+    if len(LOG) > 300:
+        raise RuntimeError("Over 300 requests in one run. Is your crawler visiting the same pages over and over?")
+    path = p.path or "/"
+    if path in SITE:
+        return Response(url, 200, SITE[path])
+    return Response(url, 404, "<html><head><title>404</title></head><body><h1>Trail not found</h1></body></html>")
+
+requests_mod = types.ModuleType("requests")
+exceptions_mod = types.ModuleType("requests.exceptions")
+exceptions_mod.HTTPError = HTTPError
+exceptions_mod.ConnectionError = ConnectionError
+requests_mod.get = get
+requests_mod.Response = Response
+requests_mod.HTTPError = HTTPError
+requests_mod.exceptions = exceptions_mod
+sys.modules["requests"] = requests_mod
+sys.modules["requests.exceptions"] = exceptions_mod
+
+def norm(u):
+    u, _ = urldefrag(str(u))
+    p = urlparse(u)
+    return f"{p.scheme}://{p.netloc}{p.path or '/'}"
+
+def short(u):
+    return u.replace(B, "") or "/"
+
+def _register(name, code):
+    linecache.cache[name] = (len(code), None, code.splitlines(True), name)
+
+def _trim(e):
+    # Keep only the frames from the student's own code, so errors stay readable.
+    items = traceback.format_exception(type(e), e, e.__traceback__)
+    keep = [items[0]] + [i for i in items[1:-1] if '"<your code>"' in i or '"<checkpoint' in i] + [items[-1]]
+    return "".join(keep)
+
+# ---- checks: each returns (passed, message) ----
+def check1(ns, out):
+    if "TrailNet Home" in out and "<title>" not in out:
+        return True, "You found the trailhead! The page title is 'TrailNet Home'."
+    if "<title>" in out:
+        return False, "Close! You printed the whole tag. Print only the text inside it."
+    return False, "I don't see the page title in your output yet."
+
+def check2(ns, out):
+    f = ns.get("get_links")
+    if not callable(f):
+        return False, "Define a function named get_links(url)."
+    got = f(B + "/trails/")
+    if not isinstance(got, (list, set, tuple)):
+        return False, f"get_links should return a list, but it returned a {type(got).__name__}."
+    got = {str(u) for u in got}
+    rel = sorted(u for u in got if not u.startswith("http"))
+    if rel:
+        return False, f"Some links are still relative, like {rel[0]!r}. Use urljoin(url, href) to make them full URLs."
+    exp = {B + "/trails/aspen-loop.html", B + "/trails/cedar-ridge.html", B + "/trails/old-trail.html", B + "/"}
+    if got != exp:
+        missing, extra = sorted(exp - got), sorted(got - exp)
+        parts = []
+        if missing: parts.append("missing " + ", ".join(missing))
+        if extra: parts.append("unexpected " + ", ".join(extra))
+        return False, "On /trails/ your list is " + "; ".join(parts) + "."
+    about = {str(u) for u in f(B + "/about.html")}
+    if about != {B + "/"}:
+        return False, f"Works on /trails/, but on /about.html you returned {sorted(about)}. Expected only {B}/"
+    return True, "Every signpost read correctly, including the relative ones."
+
+def check3(ns, out):
+    f = ns.get("is_allowed")
+    if not callable(f):
+        return False, "Define a function named is_allowed(url)."
+    before = len(LOG)
+    cases = [("/", True), ("/trails/", True), ("/trails/aspen-loop.html", True),
+             ("/ranger/log.html", False), ("/ranger/", False), ("/drafts/new-trail.html", False)]
+    for path, expected in cases:
+        result = f(B + path)
+        if result != expected:
+            return False, f"is_allowed('{B}{path}') returned {result!r}, but it should be {expected}."
+    if not any(u.endswith("/robots.txt") for u in LOG[before:]):
+        return False, "Right answers, but read the rules from robots.txt instead of typing them into your code."
+    return True, "You follow the ranger rules: /ranger/ and /drafts/ are off-limits."
+
+def check4(ns, out):
+    f = ns.get("crawl")
+    if not callable(f):
+        return False, "Define a function named crawl(start)."
+    before = len(LOG)
+    got = f(B + "/")
+    if not isinstance(got, (set, list, tuple)):
+        return False, f"crawl should return a set, but it returned a {type(got).__name__}."
+    got = {norm(u) for u in got}
+    exp = {B + "/", B + "/about.html", B + "/trails/", B + "/trails/aspen-loop.html",
+           B + "/trails/cedar-ridge.html", B + "/trails/hidden-falls.html"}
+    bad = sorted(u for u in got if "/ranger/" in u or "/drafts/" in u)
+    if bad:
+        return False, f"Your crawler went into {short(bad[0])}, which robots.txt disallows. Check is_allowed() before fetching."
+    if any("old-trail" in u for u in got):
+        return False, "old-trail.html is closed (404), but it's in your results. Only keep pages whose status_code is 200."
+    if got != exp:
+        missing = ", ".join(short(u) for u in sorted(exp - got))
+        return False, f"You found {len(got)} of {len(exp)} public pages. Missing: {missing}."
+    n = len(LOG) - before
+    return True, f"Park mapped: all {len(exp)} public pages, using {n} requests."
+
+def check5(ns, out):
+    if "RANGERS-ONLY" in out:
+        return False, "That code came from the staff-only ranger log. Your crawler shouldn't be going there."
+    if "BRISTLECONE" in out:
+        return True, "Summit code found: BRISTLECONE. You crawled the park the polite way. Trail complete!"
+    return False, "No summit code in your output yet."
+
+CHECKS = [check1, check2, check3, check4, check5]
+PROVIDED_BY = {"get_links": 2, "is_allowed": 3, "crawl": 4}
+
+def _missing_tool(e, step):
+    name = getattr(e, "name", None)
+    if isinstance(e, NameError) and name in PROVIDED_BY and PROVIDED_BY[name] - 1 < step:
+        return f"{name}() comes from checkpoint {PROVIDED_BY[name]}. Pass that checkpoint first and it will be loaded here automatically."
+    return None
+
+def run_and_check(code, prelude, step):
+    ns = {"__name__": "__main__"}
+    for i, c in enumerate(prelude):
+        name = f"<checkpoint {i + 1}>"
+        _register(name, c)
+        try:
+            with contextlib.redirect_stdout(io.StringIO()):
+                exec(compile(c, name, "exec"), ns)
+        except Exception:
+            pass
+    LOG.clear()
+    _register("<your code>", code)
+    buf = io.StringIO()
+    err = None
+    msg = "Fix the error above, then run again."
+    try:
+        with contextlib.redirect_stdout(buf):
+            exec(compile(code, "<your code>", "exec"), ns)
+    except SyntaxError as e:
+        err = "".join(traceback.format_exception_only(type(e), e))
+    except Exception as e:
+        err = _trim(e)
+        msg = _missing_tool(e, step) or msg
+    out = buf.getvalue()
+    if err:
+        return json.dumps({"out": out, "err": err, "ok": False, "msg": msg})
+    try:
+        with contextlib.redirect_stdout(io.StringIO()):
+            ok, msg = CHECKS[step](ns, out)
+    except Exception as e:
+        ok, msg = False, _missing_tool(e, step) or ("Your code ran, but crashed while being checked:\n" + _trim(e))
+    return json.dumps({"out": out, "err": None, "ok": ok, "msg": msg})
+`;
+
+// ---------- UI ----------
+const $ = (id) => document.getElementById(id);
+const esc = (s) => s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+const KEY = "pytrek-web-proto-v1";
+let state = { solved: {}, drafts: {} };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(KEY)) || {}); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+let cur = 0, py = null;
+
+function renderNav() {
+  $("steps").innerHTML = "";
+  STEPS.forEach((s, i) => {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.className = i === cur ? "active" : "";
+    b.innerHTML = `<span class="mark">${state.solved[i] ? "✓" : ""}</span>${esc(s.title)}`;
+    b.onclick = () => { stash(); cur = i; show(); };
+    li.appendChild(b);
+    $("steps").appendChild(li);
+  });
+}
+function stash() { state.drafts[cur] = $("code").value; save(); }
+function show() {
+  const s = STEPS[cur];
+  $("story").textContent = s.story;
+  $("title").textContent = s.title;
+  $("teach").innerHTML = s.teach;
+  $("task").innerHTML = s.task;
+  $("code").value = state.drafts[cur] ?? s.starter;
+  $("hint").innerHTML = s.hint;
+  $("hint").style.display = "none";
+  $("out").textContent = "";
+  $("verdict").className = "verdict";
+  renderNav();
+}
+
+async function run() {
+  if (!py) return;
+  stash();
+  $("run").disabled = true;
+  $("out").textContent = "Running…";
+  await new Promise((r) => setTimeout(r, 10));
+  const prelude = [];
+  for (let i = 0; i < cur; i++) if (state.solved[i]) prelude.push(state.solved[i]);
+  py.globals.set("CODE", $("code").value);
+  py.globals.set("PRELUDE", py.toPy(prelude));
+  py.globals.set("STEP", cur);
+  let res;
+  try { res = JSON.parse(py.runPython("run_and_check(CODE, PRELUDE, STEP)")); }
+  catch (e) { res = { out: "", err: String(e), ok: false, msg: "Something went wrong in the page itself." }; }
+  $("out").innerHTML = esc(res.out || "") + (res.err ? `<span class="err">${esc(res.err)}</span>` : "") ||
+    "(no output)";
+  if (!res.out && !res.err) $("out").textContent = "(no output)";
+  $("verdict").className = "verdict " + (res.ok ? "ok" : "bad");
+  $("verdict").textContent = (res.ok ? "✓ " : "") + res.msg;
+  if (res.ok) { state.solved[cur] = $("code").value; save(); renderNav(); }
+  $("run").disabled = false;
+}
+
+$("run").onclick = run;
+$("reset").onclick = () => { $("code").value = STEPS[cur].starter; stash(); };
+$("hintBtn").onclick = () => { const h = $("hint"); h.style.display = h.style.display === "block" ? "none" : "block"; };
+$("code").addEventListener("keydown", (e) => {
+  if (e.key === "Tab") {
+    e.preventDefault();
+    const t = e.target, a = t.selectionStart;
+    t.setRangeText("    ", a, t.selectionEnd, "end");
+  } else if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); run(); }
+});
+
+Object.keys(SITE).forEach((p) => {
+  const o = document.createElement("option");
+  o.value = p; o.textContent = "https://trailnet.test" + p;
+  $("pageSel").appendChild(o);
+});
+$("pageSel").onchange = () => { $("pageSrc").textContent = SITE[$("pageSel").value]; };
+$("pageSel").value = "/"; $("pageSrc").textContent = SITE["/"];
+
+show();
+
+(async () => {
+  try {
+    py = await loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/" });
+    $("status").textContent = "Loading BeautifulSoup…";
+    await py.loadPackage("beautifulsoup4");
+    py.globals.set("SITE_JSON", JSON.stringify(SITE));
+    py.runPython(HARNESS);
+    $("status").textContent = "Python ready";
+    $("run").disabled = false;
+  } catch (e) {
+    $("status").textContent = "Python failed to load: " + e;
+  }
+})();
+</script>
+</body>
+</html>

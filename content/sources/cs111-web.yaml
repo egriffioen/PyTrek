@@ -1,0 +1,96 @@
+# CS 111 items the web expedition is based on (Fall 2026).
+# IDs and PyTrek's own short labels only: the CS 111 course repo is private, so
+# never copy quiz, lab, or assignment text here.
+#
+# Activities cite these in their `sources:` list as "id" or "id#part",
+# e.g. "rq/hyperlinks#urljoin" or "lab/hyperlinks#Q8".
+# Parts are reading-quiz section anchors, lab question numbers, or assignment
+# parts/tasks.
+#
+# id prefixes: rq = reading quiz, lab = lab practice problems, lecture,
+#              hw = homework, project, pc = progress check, exam
+
+course: BYU CS 111, Fall 2026
+
+sources:
+  # ---- Reading quizzes ----
+  - id: rq/regex
+    label: Regex reading quiz
+    due: 2026-11-16
+    parts: [regex-overview, character-classes, combining-patterns, groups, special-characters, anchors, regex-in-python, findall, capturing-groups, helpful-functions]
+  - id: rq/html-tags-and-attributes
+    label: HTML tags and attributes reading quiz (also requests + BeautifulSoup basics)
+    due: 2026-11-18
+    parts: [html-basics, html-tags-attributes, common-tags, using-requests, beautiful-soup, finding-elements, getting-content, accessing-attributes, get-method, attrs-dict]
+  - id: rq/intro-to-www
+    label: Intro to the World Wide Web reading quiz
+    due: 2026-11-18
+    parts: [http-requests, http-methods, status-codes, client-server]
+  - id: rq/data-visualization
+    label: Data visualization (matplotlib) reading quiz
+    due: 2026-11-23
+    parts: [why-visualize, basic-line-plots, scatter-plots, histograms, bar-charts, reading-data, labels-titles, colors, multiple-lines]
+  - id: rq/hyperlinks
+    label: URLs and hyperlinks reading quiz
+    due: 2026-11-30
+    parts: [url-structure, urlparse, relative-vs-absolute, default-urls, urljoin, url-validation]
+  - id: rq/robots-txt
+    label: robots.txt reading quiz
+    due: 2026-11-30
+    parts: [robots-structure, matching-rules, crawl-delay]
+  - id: rq/web-scraping
+    label: Web scraping reading quiz
+    due: 2026-12-02
+    parts: [applications, web-scraping-pipeline, beautifulsoup-basics, extracting-data, crawling-multiple-pages, url-handling, filtering-scope]
+  - id: rq/images
+    label: Images (byuimage) reading quiz (earlier in the semester)
+    parts: [coding-images, image-attributes, new-images]
+
+  # ---- Labs (optional practice problems) ----
+  - id: lab/regex
+    label: Regex lab
+    parts: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10]
+  - id: lab/html-tags-and-attributes
+    label: HTML tags and attributes lab
+    parts: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14]
+  - id: lab/data-visualization
+    label: Data visualization lab
+    parts: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10]
+  - id: lab/hyperlinks
+    label: Hyperlinks lab
+    parts: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12]
+  - id: lab/web-scraping
+    label: Web scraping lab (crawl scavenger hunts)
+    parts: [Q1, Q2, Q3, Q4]
+  - id: lab/images
+    label: Images lab
+    parts: [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8]
+
+  # ---- Lectures (Stephens) ----
+  - id: lecture/l20
+    label: "Lecture 20: programming languages and regular expressions"
+  - id: lecture/l21
+    label: "Lecture 21: HTML, requests, BeautifulSoup"
+  - id: lecture/l22
+    label: "Lecture 22: extracting and visualizing data"
+  - id: lecture/l23
+    label: "Lecture 23: URLs, hyperlinks, robots.txt"
+  - id: lecture/l24
+    label: "Lecture 24: images and crawling"
+
+  # ---- Graded work ----
+  - id: hw/05
+    label: "Homework 05: robots.txt request guard"
+    due: 2026-12-04
+    parts: [part-1, part-2-task-1, part-2-task-3]
+  - id: project/04
+    label: "Project 04: web crawler"
+    due: 2026-12-07
+    parts: [part-2-task-1, part-2-task-2, part-2-task-3, part-3-task-1, part-3-task-2, part-3-task-3, part-3-task-4, part-4-task-1, part-4-task-2, part-4-task-3, part-4-task-4]
+  - id: pc/4
+    label: "Progress check 4: scrape, graph, and compare data"
+    due: 2026-12-09
+    parts: [data-scraping, graphs, data-comparison]
+  - id: exam/4
+    label: Exam 4
+    due: 2026-12-10

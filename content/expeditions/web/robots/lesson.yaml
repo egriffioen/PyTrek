@@ -1,0 +1,5 @@
+id: robots
+title: "The Ranger Rules"
+topic: robots-txt
+summary: Read robots.txt and decide which pages a polite crawler may visit.
+activities: [ranger-rules]
