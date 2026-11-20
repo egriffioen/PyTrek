@@ -6,8 +6,17 @@ summary: >-
 story: >-
   Someone has been tampering with the park's website: trail pages point the
   wrong way, pages have vanished, and hikers are getting lost. As a junior
-  ranger-detective, you'll track down the culprit, a rogue AI agent that
-  ignored robots.txt, and shut it down.
+  ranger-detective, you'll track down the culprit and shut it down.
+# Names are placeholders until chosen (docs/decisions.md §10).
+characters:
+  mentor:
+    name: Ruth Calloway
+    role: Senior Ranger, Pythonia National Park
+  agent:
+    name: SCOUT-7
+# Shown on the first visit, then re-readable from the map.
+briefing: briefing.md
+reviews: reviews.yaml
 # Simulated website the fake `requests` module serves (https://trailnet.test).
 site: site
 # Python loaded before every activity: fake requests + helpers for checks.

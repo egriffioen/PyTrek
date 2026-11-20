@@ -346,3 +346,31 @@ labels, never CS 111's quiz or assignment text (the course repo is private).
 park site but should not hand out working answers to graded functions
 (`parse_robots`, `can_follow_link`, the P04 crawler). Confirm with the
 professor before the pilot.
+
+## 10. Story presentation and maps (11/19/2026)
+
+- **No emojis anywhere** in the interface or content (they look tacky and
+  read as AI-made). Markers like the Milestone flag are custom drawn SVGs.
+- **Expedition page = a ranger's sketch map**: hand-drawn look on paper,
+  pencil contour lines, a dashed trail winding uphill through the lesson
+  stops to the summit (the boss fight), labels in the ranger handwriting font.
+  (Later: the home page becomes a map of all expeditions joined by a dashed
+  line up to a summit.)
+- **Opening story, first visit only, re-readable from the map:**
+  1. A note from a **warm veteran mentor** (the senior ranger) giving the
+     background and the hook.
+  2. Then a screen of **humorous reviews** from hikers who got lost, from a
+     fake review site. Idea for later: students scrape that review site to
+     measure the damage, and again after the fix to see the reviews recover.
+- **Each lesson** opens with a short ranger note (first visit, re-readable)
+  and ends with an outro note.
+- **Clue at each Milestone**: finishing it reveals a clue for the case board.
+  Clues must follow from what the student's code just found (e.g. lesson 1's
+  404 checks show pages were removed, not broken).
+- **Rogue AI messages**: the agent leaves occasional notes in its own terminal
+  font, so the villain feels present.
+- **Activity stories advance the mystery**, not just set the scene.
+- **Multiple-choice wrong answers are plausible misconceptions**, so choosing
+  one teaches something.
+- Character names are placeholders until the user picks: senior ranger
+  **Ruth Calloway**, rogue agent **SCOUT-7**, review site **TrailTalk**.

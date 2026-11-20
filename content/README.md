@@ -7,7 +7,9 @@ MongoDB). Decisions behind this format: [docs/decisions.md §8–9](../docs/deci
 content/
   sources/cs111-web.yaml        every CS 111 item activities can cite
   expeditions/web/              one expedition (unit)
-    expedition.yaml             title, story, lesson order, site, harness
+    expedition.yaml             title, story, characters, lesson order, site, harness
+    briefing.md                 the senior ranger's opening note (first visit)
+    reviews.yaml                funny lost-hiker reviews shown after the briefing
     harness.py                  Python loaded before every activity (fake requests)
     site/                       the simulated park website (https://trailnet.test)
     <lesson>/lesson.yaml        lesson title, topic, activity order
@@ -51,7 +53,10 @@ uses: [get_links]      # functions from earlier activities, preloaded (optional)
 ---
 
 ## Story
-One or two sentences of the mystery.
+A few sentences that move the mystery forward.
+
+## Agent
+(optional) A message from the rogue agent, usually a code block of log lines.
 
 ## Learn
 The minimum teaching needed, in Markdown.
@@ -86,7 +91,16 @@ choices:
     feedback: "Nudge toward the right idea"
 ```
 
+## Lesson story fields (lesson.yaml)
+- `intro`: Markdown note from the senior ranger, shown when the lesson first opens.
+- `outro`: note shown when every activity is done.
+- `clue`: `{ title, text }`, revealed when the Milestone passes and pinned to
+  the case board. It must follow from what the student's code just found.
+
 ## Rules
+- No emojis anywhere (use the drawn marks in `src/components/story/marks.tsx`).
+- Multiple-choice wrong answers should be plausible misconceptions, each with
+  feedback that explains the misunderstanding.
 - Cite at least one source. Use only IDs and PyTrek's own words: the CS 111
   course repo is private, so never copy its quiz, lab, or assignment text.
 - Don't publish working answers to graded functions (HW05 `parse_robots` /

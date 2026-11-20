@@ -1,0 +1,51 @@
+# Fake review site shown after the briefing. Humorous, never mean-spirited.
+# Later idea: serve these as a scrapable site and compare before/after the fix.
+site: TrailTalk
+tagline: Honest reviews from real hikers
+reviews:
+  - author: Dale P.
+    rating: 1
+    trail: Hidden Falls
+    date: 3 days ago
+    text: >-
+      Followed TrailNet to "Hidden Falls." Found a shed, two goats, and a very
+      surprised maintenance worker named Gus. Gus was lovely. The falls remain
+      hidden.
+  - author: MarathonMaya
+    rating: 2
+    trail: Aspen Loop
+    date: 1 week ago
+    text: >-
+      The site said Aspen Loop was "2.1 miles, easy." Either that's wrong or I
+      am a much worse hiker than I thought. My watch says 7.4. My legs say 30.
+  - author: the_hendersons
+    rating: 1
+    trail: Juniper Pass
+    date: 2 weeks ago
+    text: >-
+      Planned our whole anniversary around Juniper Pass. Clicked the link the
+      morning of: **Trail not found**. Hiked the parking lot instead. Romantic
+      in its own way.
+  - author: Priya K.
+    rating: 3
+    trail: Cedar Ridge
+    date: 2 weeks ago
+    text: >-
+      Beautiful ridge. But TrailNet told me to "turn left at the big rock" and
+      there are, conservatively, four hundred big rocks.
+  - author: Trail Mix Tom
+    rating: 1
+    trail: Old Trail
+    date: 3 weeks ago
+    text: >-
+      Website said Old Trail was open. Sign at the trailhead said CLOSED. The
+      website and the sign are now in a long-distance relationship and it is
+      not going well.
+  - author: Bev (age 71)
+    rating: 4
+    trail: Willow Creek
+    date: 3 weeks ago
+    text: >-
+      Could not find the Willow Creek page anywhere online so I asked a ranger.
+      Got there fine. Four stars because the ranger was nicer than the
+      website.

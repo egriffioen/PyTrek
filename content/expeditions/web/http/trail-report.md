@@ -1,6 +1,6 @@
 ---
 id: http-05
-version: 1
+version: 2
 title: The trail report
 stage: checkpoint
 type: finish
@@ -14,8 +14,16 @@ sources:
 
 ## Story
 
-The head ranger wants a quick report: for each trail page, is it **OPEN** or
-**MISSING**?
+Ruth wants a report she can pin on the board: which trails from this morning's
+complaints are **OPEN** on the website, and which are **MISSING**. While you
+work, you notice something odd in TrailNet's access log.
+
+## Agent
+
+```
+[04:12:07] SCOUT-7  crawl #0412 started   pages/sec: 340
+[04:12:07] SCOUT-7  robots.txt: skipped (inefficient)
+```
 
 ## Learn
 
@@ -50,7 +58,7 @@ def check(ns, out):
     expected = [["/trails/aspen-loop.html", "OPEN"], ["/trails/old-trail.html", "MISSING"],
                 ["/trails/cedar-ridge.html", "OPEN"]]
     if lines == expected:
-        return True, "Report delivered: Aspen Loop and Cedar Ridge are open, Old Trail is missing."
+        return True, "Report pinned to the board: Aspen Loop and Cedar Ridge are up, Old Trail is gone."
     for want in expected:
         if want not in lines:
             return False, f"I expected a line '{' '.join(want)}' in your output."

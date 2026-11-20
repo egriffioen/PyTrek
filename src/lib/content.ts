@@ -28,6 +28,8 @@ export type Activity = {
   lessonId: string;
   /** HTML (converted from the Markdown in content/ at build time). */
   story: string | null;
+  /** HTML: a message from the rogue agent (shown in its terminal font). */
+  agent: string | null;
   learn: string | null;
   task: string;
   hints: string[];
@@ -43,14 +45,32 @@ export type Lesson = {
   title: string;
   topic: string;
   summary: string;
+  /** HTML ranger notes: when the lesson first opens / when it's complete. */
+  intro: string | null;
+  outro: string | null;
+  /** Revealed when the Milestone is passed (text is HTML). */
+  clue: { title: string; text: string } | null;
   activities: Activity[];
 };
+
+export type Characters = {
+  mentor: { name: string; role: string };
+  agent: { name: string };
+};
+
+export type Briefing = { title: string; signoff: string; /** HTML */ body: string };
+
+export type Review = { author: string; rating: number; trail: string; date: string; /** inline HTML */ text: string };
+export type Reviews = { site: string; tagline: string; reviews: Review[] };
 
 export type Expedition = {
   id: string;
   title: string;
   summary: string;
-  story?: string;
+  story: string | null;
+  characters: Characters | null;
+  briefing: Briefing | null;
+  reviews: Reviews | null;
   lessons: Lesson[];
   /** Simulated website: path → file text. */
   site: Record<string, string>;

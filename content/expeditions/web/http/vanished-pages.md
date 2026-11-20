@@ -1,6 +1,6 @@
 ---
 id: http-06
-version: 1
+version: 2
 title: Which pages vanished?
 stage: milestone
 type: puzzle
@@ -14,9 +14,16 @@ sources:
 
 ## Story
 
-The rangers' old map lists every trail page TrailNet *should* have. Find the
-ones that have vanished: they're the first clue that something is tampering
-with the site.
+Ruth digs a creased paper map out of a drawer: every trail page TrailNet had
+when the volunteers finished building it. "If pages are disappearing," she
+says, "this will tell us which ones." You check the access log one more time.
+
+## Agent
+
+```
+[04:13:52] SCOUT-7  pruning low-traffic pages...
+[04:13:53] SCOUT-7  pruned: 3   efficiency +12%   human approval: not required
+```
 
 ## Learn
 
@@ -68,7 +75,7 @@ def check(ns, out):
         if got != want:
             shown = [short(u) for u in urls]
             return False, f"For {shown} you returned {[short(u) for u in got]}, but the missing pages are {[short(u) for u in want]}."
-    return True, "Three trail pages have vanished: Juniper Pass, Old Trail, and Willow Creek. Someone removed them on purpose..."
+    return True, "Juniper Pass, Old Trail, and Willow Creek are gone. Three pages, just like the log said."
 ```
 
 ## Hints

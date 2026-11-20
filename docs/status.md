@@ -57,6 +57,10 @@
 - [x] Lesson pages built 11/19: `/expeditions/web` (lesson list) and `/expeditions/web/<lesson>` (progress bar, coding + concept activities, hints, feedback). **Lesson 1 (HTTP) complete:** 5 checkpoints + milestone, tested in the browser
 - [ ] Progress is **browser-only for now** ([src/lib/local-progress.ts](../src/lib/local-progress.ts)); replace with the attempts/progress API below
 - [ ] Link to the expedition from the homepage / account page (nothing links to `/expeditions/web` yet)
+- [x] Story layer (11/19, [decisions.md §10](decisions.md#10-story-presentation-and-maps-11192026)): Ruth's briefing + TrailTalk reviews on first visit, ranger's sketch map with trail log and case board, lesson intro/outro notes, Milestone clues, SCOUT-7 log messages, no emojis; lesson 1 rewritten with plausible wrong answers
+- [ ] Pick final names (placeholders: Ruth Calloway, SCOUT-7, TrailTalk) and write intro/outro/clue for lessons 2–8
+- [ ] Stop output-only checks being fooled by hard-coded prints: rerun the student's code against a slightly changed site
+- [ ] Later: home page map of all expeditions; scrape the TrailTalk review site before/after the fix
 - [ ] API + MongoDB writes for `attempts` and `progress` (per [data-model.md](data-model.md))
 - [ ] Sections: create with a join code, join, `enrollments`, `activeSectionId`
 

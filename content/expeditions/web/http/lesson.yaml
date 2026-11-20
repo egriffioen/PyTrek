@@ -2,4 +2,28 @@ id: http
 title: "Why the Pages Went Missing"
 topic: http
 summary: How browsers and programs ask servers for pages, and what status codes like 404 mean.
+intro: |
+  Before we chase anybody, we need to know what we're dealing with. When a
+  hiker says a page is "missing," that could mean three very different
+  things: the whole website is down, the page is broken, or the page has been
+  taken away.
+
+  The website will tell you which, if you know how to ask. That's today's job:
+  learn how your program asks TrailNet for a page, and how to read the answer
+  it sends back.
+outro: |
+  Good work. Now we know the site itself is fine. The server answers every
+  question you ask it. Those pages didn't break. Somebody removed them.
+
+  Next we look at the pages that are still standing. If someone deleted
+  pages, I'd bet they changed a few too, and the only way to see that is to
+  read the HTML itself.
+clue:
+  title: The pages were removed, not broken
+  text: >-
+    TrailNet answered every request with a status code, so the server was up
+    the whole time. Juniper Pass, Old Trail, and Willow Creek came back
+    **404 Not Found**: the server is working, but those pages are gone. A
+    broken page or a server outage would look different. Someone took these
+    pages down on purpose, and the server log names a visitor called SCOUT-7.
 activities: [client-server, first-request, status-codes, methods, trail-report, vanished-pages]

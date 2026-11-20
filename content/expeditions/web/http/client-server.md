@@ -1,6 +1,6 @@
 ---
 id: http-02
-version: 1
+version: 2
 title: Who asks, who answers
 stage: checkpoint
 type: concept
@@ -12,19 +12,20 @@ sources:
 choices:
   - text: "Your program is the client; the computer running trailnet.test is the server."
     correct: true
-    feedback: "Yes. The client asks (sends a request); the server answers (sends a response)."
-  - text: "trailnet.test is the client, because it sends you the page."
-    feedback: "Sending the page is the server's job. Who started the conversation?"
-  - text: "There's no server; the page is already on your computer."
-    feedback: "The page lives on another computer until your program asks for it."
-  - text: "Your program and trailnet.test are both servers."
-    feedback: "One side asks and the other answers. Which side is asking?"
+    feedback: "Yes. The client starts the conversation with a request; the server answers with a response."
+  - text: "trailnet.test is the client, because it's the one sending the page back to you."
+    feedback: "Both sides send something, so that can't be the difference. The client is whoever *starts* the conversation by asking."
+  - text: "Only a web browser can be a client, so your Python program has to go through the browser."
+    feedback: "Any program that sends a request is a client. requests.get talks to the server directly; no browser needed."
+  - text: "trailnet.test is just the page's address; the server is the internet itself."
+    feedback: "The internet carries the messages, but a specific computer stores TrailNet's pages and answers for them. That computer is the server."
 ---
 
 ## Story
 
-Hikers say TrailNet pages are vanishing. Before you can investigate, you need
-to know how a program even gets a web page.
+Ruth slides a sticky note across the desk: *"Before you go poking at the
+website, make sure you know who's talking to whom. You'll be reading a lot of
+conversations."*
 
 ## Learn
 

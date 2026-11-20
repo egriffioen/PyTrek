@@ -1,10 +1,12 @@
 "use client";
 
+import { CairnMark } from "@/components/story/marks";
+
 export type ProgressStep = { id: string; title: string; milestone: boolean; done: boolean };
 
 /**
  * The lesson's trail: one segment per activity (Checkpoints, then the
- * Milestone flag at the end). Click a segment to jump to that activity.
+ * Milestone cairn at the end). Click a segment to jump to that activity.
  */
 export function ProgressBar({
   steps,
@@ -45,8 +47,8 @@ export function ProgressBar({
                 }`}
               >
                 {step.milestone && (
-                  <span aria-hidden className="absolute -top-5 right-0 text-base leading-none">
-                    ⛳
+                  <span aria-hidden className="absolute -top-6 right-0 text-amber-800 dark:text-amber-300">
+                    <CairnMark className="h-5 w-5" />
                   </span>
                 )}
               </button>

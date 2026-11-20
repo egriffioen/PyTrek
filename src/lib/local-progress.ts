@@ -14,11 +14,13 @@ export type LocalProgress = {
   /** Passing code per activity id (used as `preload` by later activities). */
   passingCode: Record<string, string>;
   drafts: Record<string, string>;
+  /** Story notes already read, e.g. "briefing:web" or "intro:web/http". */
+  seen: Record<string, string>;
 };
 
 const KEY = "pytrek:progress:v1";
 const EVENT = "pytrek-progress";
-const EMPTY: LocalProgress = { done: {}, passingCode: {}, drafts: {} };
+const EMPTY: LocalProgress = { done: {}, passingCode: {}, drafts: {}, seen: {} };
 
 let cachedRaw: string | null | undefined;
 let cachedValue: LocalProgress = EMPTY;
@@ -72,6 +74,11 @@ export function markDone(id: string, version: number, passingCode?: string) {
     done: { ...p.done, [id]: { version, at: new Date().toISOString() } },
     passingCode: passingCode === undefined ? p.passingCode : { ...p.passingCode, [id]: passingCode },
   }));
+}
+
+/** Remember that a story note was read (so it isn't forced on the next visit). */
+export function markSeen(key: string) {
+  write((p) => ({ ...p, seen: { ...p.seen, [key]: new Date().toISOString() } }));
 }
 
 export function saveDraft(id: string, code: string) {

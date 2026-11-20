@@ -6,6 +6,7 @@ import type { Activity } from "@/lib/content";
 import { clearDraft, markDone, saveDraft } from "@/lib/local-progress";
 import type { PythonRunner, RunOutcome } from "@/lib/python-runner";
 import { CodeEditor } from "./code-editor";
+import { PlayMark } from "@/components/story/marks";
 import type { ExpeditionInfo, Prerequisite } from "./lesson-player";
 
 type Feedback = { tone: "success" | "retry" | "error"; title: string; body?: string };
@@ -102,7 +103,7 @@ export function CodingActivity({
     if (result.passed) {
       onPassed();
       markDone(activity.id, activity.version, code);
-      setFeedback({ tone: "success", title: activity.stage === "milestone" ? "Milestone reached! ⛳" : "Checkpoint passed! ✓", body: result.message ?? undefined });
+      setFeedback({ tone: "success", title: activity.stage === "milestone" ? "Milestone reached!" : "Checkpoint passed!", body: result.message ?? undefined });
     } else {
       setFeedback({ tone: "retry", title: "Not yet.", body: result.message ?? undefined });
     }
@@ -140,7 +141,13 @@ export function CodingActivity({
           disabled={status === "running"}
           className="rounded-lg bg-emerald-700 px-5 py-2 font-medium text-white hover:bg-emerald-800 disabled:cursor-wait disabled:opacity-60"
         >
-          {status === "running" ? (firstRun ? "Starting Python…" : "Running…") : "▶ Run & check"}
+          {status === "running" ? (
+            firstRun ? "Starting Python…" : "Running…"
+          ) : (
+            <span className="flex items-center gap-2">
+              <PlayMark /> Run &amp; check
+            </span>
+          )}
         </button>
         {activity.hints.length > 0 && (
           <button

@@ -49,7 +49,13 @@ async function Lesson({ params }: { params: Params }) {
 
   return (
     <LessonPlayer
-      expedition={{ id: expedition.id, title: expedition.title, harness: expedition.harness, site: expedition.site }}
+      expedition={{
+        id: expedition.id,
+        title: expedition.title,
+        harness: expedition.harness,
+        site: expedition.site,
+        mentorName: expedition.characters?.mentor.name ?? null,
+      }}
       lesson={lesson}
       lessonNumber={index + 1}
       lessonCount={expedition.lessons.length}

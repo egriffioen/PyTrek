@@ -1,6 +1,6 @@
 ---
 id: http-03
-version: 1
+version: 2
 title: Knock on the door
 stage: checkpoint
 type: tweak
@@ -15,8 +15,10 @@ sources:
 
 ## Story
 
-Start with a trail you know is fine: Aspen Loop. Then try the Old Trail page
-that hikers are complaining about.
+Trail Mix Tom's review says the website called Old Trail *open* while the
+trailhead sign said *closed*. Start with a page nobody has complained about,
+Aspen Loop, so you know what a healthy answer looks like. Then knock on Old
+Trail's door.
 
 ## Learn
 
@@ -41,10 +43,10 @@ print(response.status_code)
 def check(ns, out):
     asked = [short(u) for u in LOG]
     if "/trails/old-trail.html" not in asked:
-        return False, "Run it once as is, then change the URL to the Old Trail page."
+        return False, "That's the healthy answer from Aspen Loop. Now change the URL to the Old Trail page."
     if "404" not in out:
         return False, "You requested the Old Trail page; now print its status_code."
-    return True, "404! The server is up, but the Old Trail page is gone."
+    return True, "404. TrailNet answered you, but it has nothing at that address anymore."
 ```
 
 ## Hints

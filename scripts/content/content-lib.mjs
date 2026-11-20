@@ -31,7 +31,36 @@ const Expedition = z.strictObject({
   story: z.string().optional(),
   site: z.string().optional(), // folder of simulated web pages
   harness: z.string().optional(), // Python loaded before every activity
+  characters: z
+    .strictObject({
+      mentor: z.strictObject({ name: z.string(), role: z.string() }),
+      agent: z.strictObject({ name: z.string() }),
+    })
+    .optional(),
+  briefing: z.string().optional(), // Markdown file: the mentor's opening note
+  reviews: z.string().optional(), // YAML file: lost-hiker reviews shown after the briefing
   lessons: z.array(slug).min(1),
+});
+
+const Briefing = z.strictObject({
+  title: z.string(),
+  signoff: z.string(),
+});
+
+const Reviews = z.strictObject({
+  site: z.string(),
+  tagline: z.string(),
+  reviews: z
+    .array(
+      z.strictObject({
+        author: z.string(),
+        rating: z.int().min(1).max(5),
+        trail: z.string(),
+        date: z.string(),
+        text: z.string(),
+      }),
+    )
+    .min(1),
 });
 
 const Lesson = z.strictObject({
@@ -39,6 +68,11 @@ const Lesson = z.strictObject({
   title: z.string(),
   topic: slug,
   summary: z.string(),
+  // Ranger notes (Markdown): shown when the lesson first opens / when it's complete.
+  intro: z.string().optional(),
+  outro: z.string().optional(),
+  // Revealed when the Milestone is passed; must follow from what the code found.
+  clue: z.strictObject({ title: z.string(), text: z.string() }).optional(),
   activities: z.array(slug).default([]),
 });
 
@@ -63,7 +97,12 @@ const ActivityHeader = z.strictObject({
     .optional(),
 });
 
-const SECTIONS = { Story: "story", Learn: "learn", Task: "task", Hints: "hints" };
+const SECTIONS = { Story: "story", Agent: "agent", Learn: "learn", Task: "task", Hints: "hints" };
+
+// Text fields are Markdown in the files and HTML in the build output.
+// Content is ours (reviewed in git), so its HTML is trusted.
+const block = (md) => (md ? marked.parse(md, { async: false }).trim() : null);
+const inline = (md) => marked.parseInline(md, { async: false });
 const CODE_BLOCKS = ["starter", "check"];
 
 // ---- Helpers ----
@@ -243,15 +282,12 @@ export function loadContent(contentDir) {
         const hints = parsed.sections.hints
           ? parsed.sections.hints.split(/^- /m).map((h) => h.trim()).filter(Boolean)
           : [];
-        // Text fields are Markdown in the files and HTML in the build output.
-        // Content is ours (reviewed in git), so its HTML is trusted.
-        const block = (md) => (md ? marked.parse(md, { async: false }).trim() : null);
-        const inline = (md) => marked.parseInline(md, { async: false });
         activities.push({
           ...a,
           lessonId,
           preload: preloadOf.get(a.id),
           story: block(parsed.sections.story),
+          agent: block(parsed.sections.agent),
           learn: block(parsed.sections.learn),
           task: block(parsed.sections.task) ?? "",
           hints: hints.map(block),
@@ -267,9 +303,47 @@ export function loadContent(contentDir) {
         if (milestones.length !== 1 || activities.at(-1).stage !== "milestone")
           warnings.push(`${lessonFile}: should end with exactly one milestone (has ${milestones.length})`);
       }
-      lessons.push({ ...lesson, activities });
+      if (!lesson.intro) warnings.push(`${lessonFile}: no intro note yet`);
+      if (activities.some((x) => x.stage === "milestone") && !lesson.clue) warnings.push(`${lessonFile}: milestone has no clue yet`);
+      lessons.push({
+        ...lesson,
+        intro: block(lesson.intro),
+        outro: block(lesson.outro),
+        clue: lesson.clue ? { title: lesson.clue.title, text: block(lesson.clue.text) } : null,
+        activities,
+      });
     }
-    expeditions.push({ ...exp, lessons, site, harness });
+    let briefing = null;
+    if (exp.briefing) {
+      const file = join(dir, exp.briefing);
+      if (!existsSync(file)) errors.push(`${expFile}: briefing file "${exp.briefing}" not found`);
+      else {
+        const m = readFileSync(file, "utf8").replace(/\r\n/g, "\n").match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+        const head = m ? Briefing.safeParse(parseYaml(m[1])) : null;
+        if (!m) errors.push(`${file}: must start with a YAML header (title, signoff)`);
+        else if (!head.success) for (const msg of zodMessages(head.error)) errors.push(`${file}: ${msg}`);
+        else briefing = { ...head.data, body: block(m[2].trim()) };
+      }
+    }
+    let reviews = null;
+    if (exp.reviews) {
+      const file = join(dir, exp.reviews);
+      if (!existsSync(file)) errors.push(`${expFile}: reviews file "${exp.reviews}" not found`);
+      else {
+        const r = readYaml(file, Reviews, errors);
+        if (r) reviews = { ...r, reviews: r.reviews.map((x) => ({ ...x, text: inline(x.text) })) };
+      }
+    }
+    expeditions.push({
+      ...exp,
+      story: exp.story ?? null,
+      characters: exp.characters ?? null,
+      briefing,
+      reviews,
+      lessons,
+      site,
+      harness,
+    });
   }
   return { expeditions, catalog, errors, warnings };
 }
