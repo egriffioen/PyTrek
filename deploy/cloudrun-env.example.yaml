@@ -1,0 +1,11 @@
+# Non-secret Cloud Run settings. Copy to deploy/cloudrun-env.yaml (gitignored)
+# and fill in. Secrets (MONGODB_URI, BETTER_AUTH_SECRET, SMTP_PASS) come from
+# Secret Manager instead; see the deploy command in the README.
+MONGODB_DB: "pytrek"
+BETTER_AUTH_URL: "https://pytrek-102065497723.us-central1.run.app"
+EMAIL_PROVIDER: "smtp"
+SMTP_HOST: "smtp.gmail.com"
+SMTP_PORT: "465"
+SMTP_SECURE: "true"
+SMTP_USER: "<project-address>@gmail.com"
+EMAIL_FROM: "PyTrek <<project-address>@gmail.com>"

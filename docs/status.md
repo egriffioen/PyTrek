@@ -23,13 +23,13 @@
 | App foundation | Next.js 16 (TypeScript, Tailwind), Docker standalone build | ✅ Yes (first version) |
 | Database | MongoDB Atlas (free tier) with shared client + `/api/health` | ✅ Yes |
 | Hosting | Google Cloud Run, project `pytrek`, secret `mongodb-uri` in Secret Manager, old-image cleanup policy | ✅ Yes |
-| Email | Project Gmail over SMTP; swappable by changing settings only ([src/lib/email.ts](../src/lib/email.ts)) | ❌ Local only |
-| Sign-in | Better Auth email + password: sign-up with required verification, sign-in, forgot/reset password, account page, sign-out; rate limits; code review fixes applied | ❌ Local only |
-| Fonts | Work Sans, Architects Daughter (`font-ranger`), Space Mono (`font-agent`), JetBrains Mono (`font-mono`) | ❌ Local only |
-| Homepage | Forest-green banner on a sand page, big sign-up/sign-in buttons, no-sign-in "Hello World" Python demo (Pyodide in a Web Worker, 5-second loop guard) | ❌ Local only |
+| Email | Project Gmail over SMTP; swappable by changing settings only ([src/lib/email.ts](../src/lib/email.ts)) | ✅ Yes (11/19) |
+| Sign-in | Better Auth email + password: sign-up with required verification, sign-in, forgot/reset password, account page, sign-out; rate limits; code review fixes applied | ✅ Yes (11/19) |
+| Fonts | Work Sans, Architects Daughter (`font-ranger`), Space Mono (`font-agent`), JetBrains Mono (`font-mono`) | ✅ Yes (11/19) |
+| Homepage | Forest-green banner on a sand page, big sign-up/sign-in buttons, no-sign-in "Hello World" Python demo (Pyodide in a Web Worker, 5-second loop guard) | ✅ Yes (11/19) |
 | Prototype | Web-unit prototype with 5 scraping/crawling checkpoints (temporary folder, not in the repo) | n/a |
 
-**Live site:** https://pytrek-102065497723.us-central1.run.app (still shows the old "Coming soon" page)
+**Live site:** https://pytrek-102065497723.us-central1.run.app (redeployed 11/19 with sign-in, email, fonts, and the new homepage)
 
 ### Not built yet
 - Lessons: the lesson page, CodeMirror editor, lesson content files, the simulated park website
@@ -41,11 +41,13 @@
 
 ## Next steps
 
-### 1. Deploy what's built (next session, ~1 hour)
-- [ ] Add 2 secrets to Secret Manager: `BETTER_AUTH_SECRET` and the Gmail app password (`SMTP_PASS`)
-- [ ] Set Cloud Run settings: `BETTER_AUTH_URL` (the run.app address), `EMAIL_PROVIDER=smtp`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `EMAIL_FROM`
-- [ ] Redeploy (command in the [README](../README.md)) and test sign-up, email verification, sign-in, and reset on the live site
-- [ ] Confirm the rate limit sees each visitor's real IP on Cloud Run (the review fix assumes how Google's front end forwards it)
+### 1. Deploy what's built (done 11/19 except the sign-in test)
+- [x] Add 2 secrets to Secret Manager: `BETTER_AUTH_SECRET` and the Gmail app password (`SMTP_PASS`)
+- [x] Set Cloud Run settings: `BETTER_AUTH_URL` (the run.app address), `EMAIL_PROVIDER=smtp`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `EMAIL_FROM`
+- [x] Redeploy (command in the [README](../README.md)); fixed a build failure (pages connected to MongoDB while prerendering)
+- [x] Live checks: `/api/health` ok, homepage and Python demo run, `/account` redirects to sign-in when signed out
+- [ ] **You:** test sign-up, email verification, sign-in, and password reset on the live site with a real inbox
+- [x] Rate limit sees each visitor's real IP on Cloud Run (a spoofed `X-Forwarded-For` was ignored; checked 11/19)
 
 ### 2. Build the core lesson experience (11/21–11/24)
 - [ ] Decide the lesson content file format (JSON or Markdown + JSON)

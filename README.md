@@ -49,8 +49,15 @@ Live (pilot): https://pytrek-102065497723.us-central1.run.app
 (health check: `/api/health`)
 
 Deploy to Google Cloud Run (project `pytrek`, region `us-central1`). Cloud Build
-builds the Dockerfile; the database URI comes from Secret Manager:
+builds the Dockerfile. Secrets come from Secret Manager (`mongodb-uri`,
+`better-auth-secret`, `smtp-pass`; the Cloud Run service account has
+`secretAccessor` on each). Other settings come from `deploy/cloudrun-env.yaml`
+(gitignored; copy [deploy/cloudrun-env.example.yaml](deploy/cloudrun-env.example.yaml)):
 
 ```bash
-gcloud run deploy pytrek --source . --region us-central1 --allow-unauthenticated --set-secrets "MONGODB_URI=mongodb-uri:latest" --set-env-vars "MONGODB_DB=pytrek"
+gcloud run deploy pytrek --source . --region us-central1 --allow-unauthenticated --set-secrets "MONGODB_URI=mongodb-uri:latest,BETTER_AUTH_SECRET=better-auth-secret:latest,SMTP_PASS=smtp-pass:latest" --env-vars-file deploy/cloudrun-env.yaml
 ```
+
+The build has no database access, so pages must not connect to MongoDB while
+prerendering: read request data (`headers()`, `connection()`) before opening
+the database.
